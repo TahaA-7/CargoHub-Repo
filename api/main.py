@@ -15,6 +15,69 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_response(403)
             self.end_headers()
             return
+
+        paths = len(path)
+        match paths:
+            case 1:
+                first_level_endpoint = data_provider.fetch_generic_endpoint_pool(path[0]).get_first_level_endpoint_all()
+                self.close_handle_get_method(first_level_endpoint)
+            case 2:
+                endpoint_unit_id = int(path[1])
+                endpoint_unit = data_provider.fetch_generic_endpoint_pool(path[0]).get_endpoint_unit(endpoint_unit_id)
+                self.close_handle_get_method(endpoint_unit)
+            case 3:
+                #contingent upon path[2]
+                if path[1] == "warehouses":
+                    if path[2] == "locations":
+                        endpoint_unit_id = int(path[1])
+                        endpoint_unit = data_provider.fetch_generic_endpoint_pool(path[0]).get_path2_units_in_path1(endpoint_unit_id, path[2])
+                        self.close_handle_get_method(endpoint_unit)
+                    else:
+                        self.send_response(404)
+                        self.end_headers()
+                elif path[1] == "transfers":
+                    return
+                elif path[1] == "items":
+                    return
+                elif path[1] == "item_lines":
+                    return
+                elif path[1] == "item_groups":
+                    return
+                elif path[1] == "item_types":
+                    return
+                elif path[1] == "suppliers":
+                    return
+                elif path[1] == "orders":
+                    return
+                elif path[1] == "clients":
+                    return
+                elif path[1] == "shipments":
+                    if path[2] == "orders":
+                        return
+                    elif path[2] == "clients":
+                        return
+                    else:
+                        self.send_response(404)
+                        self.end_headers()
+                else:
+                    self.send_response(404)
+                    self.end_headers()
+            case 4:
+                if path[1] == "inventory" and path[3] == "totals":
+                    return
+                else:
+                    self.send_response(404)
+                    self.end_headers()
+            case _:
+                self.send_response(404)
+                self.end_headers()
+
+    def close_handle_get_method(self, endpoint):
+        self.send_response(200)  # Send this because the user has access to the endpoint. The content is irrelevant at this point.
+        self.send_header("Content-type", "application/json")
+        self.end_headers()
+        self.wfile.write(json.dumps(endpoint).encode("utf-8"))
+
         if path[0] == "warehouses":
             paths = len(path)
             match paths:
@@ -373,6 +436,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 case _:
                     self.send_response(404)
                     self.end_headers()
+        # DO NOT DELETE
         else:
             self.send_response(404)
             self.end_headers()
@@ -799,6 +863,21 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(500)
                 self.end_headers()
 
+    def do_REQUEST(self, request_type):
+        api_key = self.headers.get("API_KEY")
+        user = auth_provider.get_user(api_key)
+        if user == None:
+            self.send_response(401)
+            self.end_headers()
+        else:
+            try:
+                path = self.path.split("/")
+                if len(path) > 3 and path[1] == "api" and path[2] == "v1":
+                    self.handle_delete_version_1(path[3:], user)
+            except Exception:
+                self.send_response(500)
+                self.end_headers()
+
 
 if __name__ == "__main__":
     PORT = 3000
@@ -808,4 +887,3 @@ if __name__ == "__main__":
         notification_processor.start()
         print(f"Serving on port {PORT}...")
         httpd.serve_forever()
-#
