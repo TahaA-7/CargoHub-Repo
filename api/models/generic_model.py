@@ -75,6 +75,12 @@ class Generic_Model(Base):
                 if x["id"] == endpoint_unit_id:
                     return x["items"]
             return None
+        elif self.endpoint_path == "inventories":
+            result = []
+            for x in self.data:
+                if x["item_id"] == endpoint_unit_id:
+                    result.append(x)
+            #
         else:
             return None
         return result
