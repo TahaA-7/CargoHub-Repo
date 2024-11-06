@@ -115,5 +115,3 @@ def test_get_deleted_warehouse():
 #     response = requests.get(f"{BASE_URL}/warehouses")
 #     assert response.status_code == 401  # Unauthorized = SUCCESS
 
-
-    
