@@ -355,7 +355,7 @@ def test_post_transfer():
     assert get_response.status_code == 200
     assert get_response.json() != None
 
-def test_put_transer():
+def test_put_tranfser():
     get_transfer = requests.get(f"{BASE_URL}/transfers/212212", headers=HEADER)
     transfer = get_transfer.json()
     old_updated_at = transfer['updated_at']
