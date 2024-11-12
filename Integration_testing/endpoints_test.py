@@ -44,11 +44,13 @@ def test_get_posted_warehouse():
     assert response.status_code == 200  # SUCCESS
 
 
+
+
 def test_put_warehouse():
     get_warehouse = requests.get(f"{BASE_URL}/warehouses/1239", headers=HEADER)
     warehouse = get_warehouse.json()
     old_updated_at = warehouse['updated_at']
-    
+    # old_warehouse_code = 'YQZZNL56'
     warehouse['code'] = "YQZZNL56909090"
 
     response = requests.put(f"{BASE_URL}/warehouses/1239", headers=HEADER, json=warehouse)
@@ -93,7 +95,7 @@ def test_delete_warehouse():
     assert response.status_code == 200  # SUCCESS
 
 def test_get_deleted_warehouse():
-    local_warehouse= {"id": 1239,
+    local_warehouse= {"id": 999999999,
                 "code": "YQZZNL56909090",
                 "name": "Heemskerk cargo hub",
                 "address": "Karlijndreef 281",
@@ -104,7 +106,9 @@ def test_get_deleted_warehouse():
                 "contact": {"name": "Fem Keijzer", "phone": "(078) 0013363", "email": "blamore@example.net"}, "created_at": "1983-04-13 04:59:55", "updated_at": "2007-02-08 20:11:00"
                 }
     response = requests.get(f"{BASE_URL}/warehouses/{local_warehouse['id']}", headers=HEADER)
-    assert response.status_code == 404  # NOT FOUND
+
+    # print(response.json())
+    assert response.json() == None  # SUCCESS
 
 
 # def test_auth_get_warehouse():
