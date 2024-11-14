@@ -6,11 +6,11 @@ PUT http://localhost:3000/api/v1/locations/{id} -> update existing location
 DELETE http://localhost:3000/api/v1/locations/{id} -> remove existing location
 
 Endpoints for items:
-GET http://localhost:3000/api/v1/items -> return all items
-GET http://localhost:3000/api/v1/items/{id} -> return specific item
+GET http://localhost:3000/api/v1/items -> return all items ---Works
+GET http://localhost:3000/api/v1/items/{id} -> return specific item ---Does not work
 GET http://localhost:3000/api/v1/items/{id}/inventory -> return specific item inventories of locations
 GET http://localhost:3000/api/v1/items/{id}/inventory/totals -> return total stats of specific item
-POST http://localhost:3000/api/v1/items -> add item
+POST http://localhost:3000/api/v1/items -> add item ---Does not work
 PUT http://localhost:3000/api/v1/items/{id} -> update existing item
 DELETE http://localhost:3000/api/v1/items/{id} -> remove existing item
 

@@ -1,0 +1,4 @@
+[
+  "test_items.py::test_data_post_item",
+  "test_items.py::test_get_posted_item"
+]

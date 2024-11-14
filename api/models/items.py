@@ -49,10 +49,10 @@ class Items(Base):
 
     def add_item(self, item):
         if len(self.data) > 0:
-            max_id = max([i["id"] for i in self.data])
-            item["id"] = max_id + 1
+            max_id = max([i["uid"] for i in self.data])
+            item["uid"] = max_id + 1
         else:
-            item["id"] = 1  # First item
+            item["uid"] = 1  # First item
         item["created_at"] = self.get_timestamp()
         item["updated_at"] = self.get_timestamp()
         self.data.append(item)
