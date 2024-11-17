@@ -13,28 +13,28 @@ class Base:
         self.data_path = root_path + endpoint_path
         self.load(is_debug)
 
-    def get_first_level_endpoint_all(self):
+    def get_all(self):
         return self.data
 
-    def get_endpoint_unit(self, endpoint_unit_id):
+    def get_single(self, endpoint_unit_id):
         for x in self.data:
             if x["id"] == endpoint_unit_id:
                 return x
         return None
 
-    def add_endpoint(self, endpointlv2):
+    def add_single(self, endpointlv2):
         endpointlv2["created_at"] = self.get_timestamp()
         endpointlv2["updated_at"] = self.get_timestamp()
         self.data.append(endpointlv2)
 
-    def update_endpoint(self, endpointlv2_id, endpointlv2):
+    def update_single(self, endpointlv2_id, endpointlv2):
         endpointlv2["updated_at"] = self.get_timestamp()
         for i in range(len(self.data)):
             if self.data[i]["id"] == endpointlv2_id:
                 self.data[i] = endpointlv2
                 break
 
-    def remove_edpoint(self, endpointlv2_id):
+    def remove_single(self, endpointlv2_id):
         for x in self.data:
             if x["id"] == endpointlv2_id:
                 self.data.remove(x)

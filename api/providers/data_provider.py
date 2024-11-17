@@ -1,3 +1,4 @@
+from models.base import Base
 from models.generic_model import Generic_Model
 
 from models.warehouses import Warehouses
@@ -39,7 +40,7 @@ def init():
     global _warehouses, _locations, _transfers, _items, _item_lines, _item_groups, _item_types, _inventories, _suppliers, _orders, _clients, _shipments, _clients
     for model_key, endpoint_str in model_endpoint_dict.items():
         # The dictionary uses global variables as keys, so update the variables rather than the dictionary keys by using `global()`.
-        globals()[model_key] = Generic_Model(ROOT_PATH, endpoint_str, DEBUG)
+        globals()[model_key] = Base(ROOT_PATH, endpoint_str, DEBUG)
         # Also update the dictionary values so that the dictionary content and global variables match.
         model_endpoint_dict[model_key] = globals()[model_key]
 
