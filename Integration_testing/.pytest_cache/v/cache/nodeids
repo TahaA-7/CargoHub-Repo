@@ -1,4 +1,7 @@
 [
   "test_items.py::test_data_post_item",
-  "test_items.py::test_get_posted_item"
+  "test_items.py::test_delete_warehouse",
+  "test_items.py::test_get_deleted_warehouse",
+  "test_items.py::test_get_posted_item",
+  "test_items.py::test_put_item"
 ]
