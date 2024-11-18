@@ -24,7 +24,7 @@ def test_data_post_item():
                 }
 
     response = requests.post(f"{BASE_URL}/items", headers=HEADER, json=new_item)
-    assert response.status_code == 201  # SUCCESS
+    assert response.status_code == 201  #DOESN'T WORK
 
 
 def test_get_posted_item():
