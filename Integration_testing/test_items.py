@@ -3,7 +3,7 @@ import time
 BASE_URL = 'http://localhost:3000/api/v1'
 
 HEADER = {"API_KEY" : "a1b2c3d4e5"}
-#
+
 def test_data_post_item():
     new_item= {"uid": "P000001",
         "code": "sjQ23408K",
@@ -49,15 +49,15 @@ def test_get_posted_item():
                 }
 
 
-    response = requests.get(f"{BASE_URL}/items", headers=HEADER)
+    response = requests.get(f"{BASE_URL}/items/{local_new_item['uid']}", headers=HEADER)
     # check if the received data is the same as the data we posted
 
 
 
 
     
-    assert response.status_code == 200  # SUCCESS
-    #assert response.json()["uid"] == local_new_item["uid"]
+
+    assert response.json()["uid"] == local_new_item["uid"]
 
 
 # def test_put_warehouse():
