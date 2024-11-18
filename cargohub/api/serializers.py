@@ -2,9 +2,8 @@ from rest_framework import serializers
 
 
 class ClientSerializer(serializers.ModelSerializer):
-    id = serializers.AutoField(primary_key=True)
     name = serializers.CharField(max_length=255)
-    address = serializers.TextField()
+    address = serializers.CharField()
     city = serializers.CharField(max_length=100)
     zip_code = serializers.CharField(max_length=20)
     province = serializers.CharField(max_length=100)
@@ -16,11 +15,10 @@ class ClientSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField()
 
 
-class Warehouses(serializers.Model):
-    id = serializers.AutoField(primary_key=True)
+class Warehouses(serializers.ModelSerializer):
     code = serializers.CharField(max_length=8)
     name = serializers.CharField(max_length=255)
-    address = serializers.TextField()
+    address = serializers.CharField()
     zip = serializers.CharField(max_length=20)
     city = serializers.CharField(max_length=100)
     province = serializers.CharField(max_length=100)
@@ -32,12 +30,11 @@ class Warehouses(serializers.Model):
     updated_at = serializers.DateTimeField()
 
 
-class Suppliers(serializers.Model):
-    id = serializers.AutoField(primary_key=True)
+class Suppliers(serializers.ModelSerializer):
     code = serializers.CharField(max_length=7)
     name = serializers.CharField(max_length=255)
-    address = serializers.TextField()
-    address_extra = serializers.TextField()
+    address = serializers.CharField()
+    address_extra = serializers.CharField()
     city = serializers.CharField(max_length=100)
     zip = serializers.CharField(max_length=20)
     province = serializers.CharField(max_length=100)
@@ -51,12 +48,11 @@ class Suppliers(serializers.Model):
 
     
 
-class Shipments(serializers.Model): 
-    id = serializers.AutoField(primary_key=True)
+class Shipments(serializers.ModelSerializer): 
     code = serializers.CharField(max_length=7)
     name = serializers.CharField(max_length=255)
-    address = serializers.TextField()
-    address_extra = serializers.TextField()
+    address = serializers.CharField()
+    address_extra = serializers.CharField()
     city = serializers.CharField(max_length=100)
     zip = serializers.CharField(max_length=20)
     province = serializers.CharField(max_length=100)
@@ -69,44 +65,44 @@ class Shipments(serializers.Model):
 
 
 
-class Transfers(serializers.Model):
-    id = serializers.AutoField(primary_key=True)
-    reference = serializers.CharField(max_length=7)
-    transfer_from = serializers.CharField(max_length=255, null=True)
-    transfer_to = serializers.CharField(max_length=4, null=True)
-    transfer_status = serializers.CharField(max_length=255)
+class Transfers(serializers.ModelSerializer):
+    reference = serializers.CharField(max_length=7, required=True)
+    transfer_from = serializers.CharField(max_length=255, required=True)
+    transfer_to = serializers.CharField(max_length=4, required=True)
+    transfer_status = serializers.CharField(max_length=255, required=True)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
 
 
     
 
-class Order(serializers.Model):
+class Order(serializers.ModelSerializer):
     source_id = serializers.IntegerField()
     order_date = serializers.DateTimeField()
     request_date = serializers.DateTimeField()
     reference = serializers.CharField(max_length=255)
-    reference_extra = serializers.TextField(blank=True, null=True)
+    reference_extra = serializers.CharField(max_length=255, required=True)  
     order_status = serializers.CharField(max_length=50)
-    notes = serializers.TextField(blank=True, null=True)
-    shipping_notes = serializers.TextField(blank=True, null=True)
-    picking_notes = serializers.TextField(blank=True, null=True)
+    notes = serializers.CharField(max_length=255, required=True) 
+    shipping_notes = serializers.CharField(max_length=255, required=True) 
+    picking_notes = serializers.CharField(max_length=255, required=True) 
     warehouse_id = serializers.IntegerField()
-    ship_to = serializers.TextField(blank=True, null=True)
-    bill_to = serializers.TextField(blank=True, null=True)
-    shipment_id = serializers.IntegerField(blank=True, null=True)
+    ship_to = serializers.CharField(max_length=255, required=True)  
+    bill_to = serializers.CharField(max_length=255, required=True)  
+    shipment_id = serializers.IntegerField(required=False) 
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
-    total_discount = serializers.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    total_tax = serializers.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    total_surcharge = serializers.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    created_at = serializers.DateTimeField(auto_now_add=True)
-    updated_at = serializers.DateTimeField(auto_now=True)
+    total_discount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
+    total_tax = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
+    total_surcharge = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
 
 
 
 
-class OrderItem(serializers.Model):
-    order = serializers.ForeignKey(Order, related_name="items", on_delete=serializers.CASCADE)
+class OrderItem(serializers.ModelSerializer):
+    from .models import Order
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
     item_id = serializers.CharField(max_length=50)
     amount = serializers.IntegerField()
 
@@ -114,12 +110,11 @@ class OrderItem(serializers.Model):
     
 
 
-class Locations(serializers.Model):
-    id = serializers.AutoField(primary_key=True)
+class Locations(serializers.ModelSerializer):
     warehouse_id = serializers.IntegerField()
     code = serializers.CharField(max_length=5)
     name = serializers.CharField(max_length=255)
-    created_at = serializers.DateTimeField(auto_now_add=True)
-    updated_at = serializers.DateTimeField(auto_now=True)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
 
     
