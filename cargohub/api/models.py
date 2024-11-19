@@ -154,7 +154,7 @@ class Transfers(models.Model):
         return self.reference
     
 
-class Order(models.Model):
+class Orders(models.Model):
     source_id = models.IntegerField()
     order_date = models.DateTimeField()
     request_date = models.DateTimeField()
@@ -180,7 +180,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
+    order = models.ForeignKey(Orders, related_name="items", on_delete=models.CASCADE)
     item_id = models.CharField(max_length=50)
     amount = models.IntegerField()
 

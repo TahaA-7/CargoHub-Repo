@@ -15,7 +15,7 @@ class ClientSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField()
 
 
-class Warehouses(serializers.ModelSerializer):
+class WarehousesSerializer(serializers.ModelSerializer):
     code = serializers.CharField(max_length=8)
     name = serializers.CharField(max_length=255)
     address = serializers.CharField()
@@ -30,7 +30,7 @@ class Warehouses(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField()
 
 
-class Suppliers(serializers.ModelSerializer):
+class SuppliersSerializer(serializers.ModelSerializer):
     code = serializers.CharField(max_length=7)
     name = serializers.CharField(max_length=255)
     address = serializers.CharField()
@@ -48,7 +48,7 @@ class Suppliers(serializers.ModelSerializer):
 
     
 
-class Shipments(serializers.ModelSerializer): 
+class ShipmentsSerializer(serializers.ModelSerializer): 
     code = serializers.CharField(max_length=7)
     name = serializers.CharField(max_length=255)
     address = serializers.CharField()
@@ -65,7 +65,7 @@ class Shipments(serializers.ModelSerializer):
 
 
 
-class Transfers(serializers.ModelSerializer):
+class TransfersSerializer(serializers.ModelSerializer):
     reference = serializers.CharField(max_length=7, required=True)
     transfer_from = serializers.CharField(max_length=255, required=True)
     transfer_to = serializers.CharField(max_length=4, required=True)
@@ -76,7 +76,7 @@ class Transfers(serializers.ModelSerializer):
 
     
 
-class Order(serializers.ModelSerializer):
+class OrdersSerializer(serializers.ModelSerializer):
     source_id = serializers.IntegerField()
     order_date = serializers.DateTimeField()
     request_date = serializers.DateTimeField()
@@ -100,9 +100,9 @@ class Order(serializers.ModelSerializer):
 
 
 
-class OrderItem(serializers.ModelSerializer):
-    from .models import Order
-    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
+class OrderItemSerializer(serializers.ModelSerializer):
+    from .models import Orders
+    order = serializers.PrimaryKeyRelatedField(queryset=Orders.objects.all())
     item_id = serializers.CharField(max_length=50)
     amount = serializers.IntegerField()
 
@@ -110,11 +110,52 @@ class OrderItem(serializers.ModelSerializer):
     
 
 
-class Locations(serializers.ModelSerializer):
+class LocationsSerializer(serializers.ModelSerializer):
     warehouse_id = serializers.IntegerField()
     code = serializers.CharField(max_length=5)
     name = serializers.CharField(max_length=255)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
 
-    
+class ItemsSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+
+
+class ItemLinesSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+
+
+class ItemTypesSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+
+class ItemGroupsSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+
+class InventoriesSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    address = serializers.CharField()
+    city = serializers.CharField(max_length=100)
+    zip_code = serializers.CharField(max_length=20)
+    province = serializers.CharField(max_length=100)
+    country = serializers.CharField(max_length=100)
+    contact_name = serializers.CharField(max_length=255)
+    contact_phone = serializers.CharField(max_length=50)
+    contact_email = serializers.EmailField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
