@@ -1,9 +1,9 @@
 Endpoints for locations:
-GET http://localhost:3000/api/v1/locations -> return all locations
-GET http://localhost:3000/api/v1/locations/{id} -> return specific location
-POST http://localhost:3000/api/v1/locations -> add location
-PUT http://localhost:3000/api/v1/locations/{id} -> update existing location
-DELETE http://localhost:3000/api/v1/locations/{id} -> remove existing location
+GET http://localhost:3000/api/v1/locations -> return all locations ---Works
+GET http://localhost:3000/api/v1/locations/{id} -> return specific location ---Works
+POST http://localhost:3000/api/v1/locations -> add location ---Works
+PUT http://localhost:3000/api/v1/locations/{id} -> update existing location ---Works
+DELETE http://localhost:3000/api/v1/locations/{id} -> remove existing location ---Works
 
 
 ###

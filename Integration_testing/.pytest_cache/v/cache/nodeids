@@ -3,5 +3,16 @@
   "test_items.py::test_delete_warehouse",
   "test_items.py::test_get_deleted_warehouse",
   "test_items.py::test_get_posted_item",
-  "test_items.py::test_put_item"
+  "test_items.py::test_put_item",
+  "test_locations.py::test_data_post_location",
+  "test_locations.py::test_delete_location",
+  "test_locations.py::test_delete_warehouse",
+  "test_locations.py::test_get_deleted_location",
+  "test_locations.py::test_get_deleted_warehouse",
+  "test_locations.py::test_get_posted_location",
+  "test_locations.py::test_get_posted_warehouse",
+  "test_locations.py::test_get_updated_location",
+  "test_locations.py::test_get_updated_warehouse",
+  "test_locations.py::test_put_location",
+  "test_locations.py::test_put_warehouse"
 ]

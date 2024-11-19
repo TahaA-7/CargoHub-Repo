@@ -1,3 +1,4 @@
 {
-  "test_items.py::test_data_post_item": true
+  "test_items.py::test_data_post_item": true,
+  "test_locations.py::test_get_deleted_warehouse": true
 }
