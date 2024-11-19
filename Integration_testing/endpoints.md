@@ -18,10 +18,10 @@ DELETE http://localhost:3000/api/v1/items/{id} -> remove existing item ---Works
 ###
 
 Endpoints for orders:
-GET http://localhost:3000/api/v1/orders -> return all orders
-GET http://localhost:3000/api/v1/orders/{id} -> return specific order
-GET http://localhost:3000/api/v1/orders/{id}/items -> return all items of a specific order
-POST http://localhost:3000/api/v1/orders -> add order
-PUT http://localhost:3000/api/v1/orders/{id} -> update existing order
-PUT http://localhost:3000/api/v1/orders/{id}/items -> update items of a specific order
-DELETE http://localhost:3000/api/v1/orders/{id} -> remove existing order
+GET http://localhost:3000/api/v1/orders -> return all orders ---Works
+GET http://localhost:3000/api/v1/orders/{id} -> return specific order ---Works
+GET http://localhost:3000/api/v1/orders/{id}/items -> return all items of a specific order ---Works
+POST http://localhost:3000/api/v1/orders -> add order ---Works
+PUT http://localhost:3000/api/v1/orders/{id} -> update existing order ---Works
+PUT http://localhost:3000/api/v1/orders/{id}/items -> update items of a specific order ---Does not work
+DELETE http://localhost:3000/api/v1/orders/{id} -> remove existing order ---Works
