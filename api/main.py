@@ -11,10 +11,12 @@ from processors import notification_processor
 class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def handle_get_version_1(self, path, user):
+       
         if not auth_provider.has_access(user, path, "get"):
             self.send_response(403)
             self.end_headers()
             return
+       
         if path[0] == "warehouses":
             paths = len(path)
             match paths:
@@ -378,8 +380,16 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
 
     def do_GET(self):
+        
+
         api_key = self.headers.get("API_KEY")
         user = auth_provider.get_user(api_key)
+    
+        if self.path == "/api/v1/":
+            self.send_response(200)
+            self.end_headers()
+            return
+
         if user == None:
             self.send_response(401)
             self.end_headers()
