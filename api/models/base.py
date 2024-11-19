@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import os
 
 DATA = []
 
@@ -10,7 +11,7 @@ class Base:
         if endpoint_path == None:
             return
         self.endpoint_path = f"{endpoint_path}.json"
-        self.data_path = root_path + endpoint_path
+        self.data_path = os.path.join(root_path, self.endpoint_path)
         self.load(is_debug)
 
     def get_all(self):
@@ -43,9 +44,14 @@ class Base:
         if is_debug:
             self.data = DATA
         else:
-            f = open(self.data_path, "r")
-            self.data = json.load(f)
-            f.close()
+            try:
+                print(f"Loading data from: {self.data_path}")
+                with open(self.data_path, "r") as f:
+                    self.data = json.load(f)
+            except FileNotFoundError:
+                print(f"File not found: {self.data_path}")
+                self.data = []
+
 
     def save(self):
         f = open(self.data_path, "w")

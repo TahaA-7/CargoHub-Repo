@@ -17,6 +17,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             return
 
         paths = len(path)
+
         if (paths) > 1:
             endpoint_unit_id = int(path[1])
         match paths:

@@ -1,3 +1,5 @@
+import os
+
 from models.base import Base
 from models.generic_model import Generic_Model
 
@@ -16,31 +18,19 @@ from models.shipments import Shipments
 
 DEBUG = False
 
-ROOT_PATH = "./data/"
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT_PATH = os.path.join(PROJECT_ROOT, "data")
 
-_warehouses = None
-_locations = None
-_transfers = None
-_items = None
-_item_lines = None
-_item_groups = None
-_item_types = None
-_inventories = None
-_suppliers = None
-_orders = None
-_shipments = None
-_clients = None
-
-model_endpoint_dict = {_warehouses: "warehouses", _locations: "locations", _transfers: "transfers", _items: "items",
-                       _item_lines: "item_lines", _item_groups: "item_groups", _item_types: "item_types", _inventories: "inventories",
-                       _suppliers: "suppliers", _orders: "orders", _shipments: "shipments", _clients: "clients"}
+model_endpoint_dict = {"_warehouses": "warehouses", "_locations": "locations", "_transfers": "transfers", "_items": "items",
+                       "_item_lines": "item_lines", "_item_groups": "item_groups", "_item_types": "item_types", "_inventories": "inventories",
+                       "_suppliers": "suppliers", "_orders": "orders", "_shipments": "shipments", "_clients": "clients"}
 
 
 def init():
-    global _warehouses, _locations, _transfers, _items, _item_lines, _item_groups, _item_types, _inventories, _suppliers, _orders, _clients, _shipments, _clients
+    global _warehouses, _locations, _transfers, _items, _item_lines, _item_groups, _item_types, _inventories, _suppliers, _orders, _clients, _shipments
     for model_key, endpoint_str in model_endpoint_dict.items():
         # The dictionary uses global variables as keys, so update the variables rather than the dictionary keys by using `global()`.
-        globals()[model_key] = Base(ROOT_PATH, endpoint_str, DEBUG)
+        globals()[model_key] = Generic_Model(ROOT_PATH, endpoint_str, DEBUG)
         # Also update the dictionary values so that the dictionary content and global variables match.
         model_endpoint_dict[model_key] = globals()[model_key]
 

@@ -7,13 +7,6 @@ DATA = []
 
 
 class Generic_Model(Base):
-    def __init__(self, root_path, endpoint_path=None, is_debug=False):
-        if endpoint_path == None:
-            return
-        self.endpoint_path = f"{endpoint_path}.json"
-        self.data_path = root_path + endpoint_path
-        self.load(is_debug)
-
     def get_units_in_other_endpoint(self, endpoint_unit_id, second_endpoint_arg=None):
         result = []
         if self.endpoint_path == "locations":  # get_locations_in_warehouse
@@ -103,7 +96,7 @@ class Generic_Model(Base):
                         found = True
                         break
                 if not found:
-                    inventories = data_provider.fetch_inventory_pool().get_units_in_other_endpoint(x["item_id"])
+                    inventories = data_provider.fetch_generic_endpoint_pool().get_units_in_other_endpoint(x["item_id"])
                     min_ordered = 1_000_000_000_000_000_000
                     min_inventory
                     for z in inventories:
@@ -112,11 +105,11 @@ class Generic_Model(Base):
                             min_inventory = z
                     min_inventory["total_allocated"] -= x["amount"]
                     min_inventory["total_expected"] = y["total_on_hand"] + y["total_ordered"]
-                    data_provider.fetch_inventory_pool().update_inventory(min_inventory["id"], min_inventory)
+                    data_provider.fetch_generic_endpoint_pool().update_single(min_inventory["id"], min_inventory)
             for x in current:
                 for y in collection:
                     if x["item_id"] == y["item_id"]:
-                        inventories = data_provider.fetch_inventory_pool().get_units_in_other_endpoint(x["item_id"])
+                        inventories = data_provider.fetch_generic_endpoint_pool().get_units_in_other_endpoint(x["item_id"])
                         min_ordered = 1_000_000_000_000_000_000
                         min_inventory
                         for z in inventories:
@@ -125,25 +118,25 @@ class Generic_Model(Base):
                                 min_inventory = z
                     min_inventory["total_allocated"] += y["amount"] - x["amount"]
                     min_inventory["total_expected"] = y["total_on_hand"] + y["total_ordered"]
-                    data_provider.fetch_inventory_pool().update_single(min_inventory["id"], min_inventory)
+                    data_provider.fetch_generic_endpoint_pool().update_single(min_inventory["id"], min_inventory)
             order["items"] = collection
             self.update_single(endpoint_unit_id, order)
         elif self.endpoint_path == "shipments":  # update_orders_in_shipment
             if second_endpoint_arg == "orders":
-                packed_orders = self.get_orders_in_shipment(endpoint_unit_id)
+                packed_orders = self.get_units_in_other_endpoint(endpoint_unit_id)
                 for x in packed_orders:
                     if x not in collection:
-                        order = self.get_order(x)
+                        order = self.get_single(x)
                         order["shipment_id"] = -1
                         order["order_status"] = "Scheduled"
-                        self.update_order(x, order)
+                        self.update_single(x, order)
                 for x in collection:
-                    order = self.get_order(x)
+                    order = self.get_single(x)
                     order["shipment_id"] = endpoint_unit_id
                     order["order_status"] = "Packed"
-                    self.update_order(x, order)
+                    self.update_single(x, order)
             elif second_endpoint_arg == "items":  # update_items_in_shipment
-                shipment = self.get_shipment(endpoint_unit_id)
+                shipment = self.get_single(endpoint_unit_id)
                 current = shipment["items"]
                 for x in current:
                     found = False
@@ -152,7 +145,7 @@ class Generic_Model(Base):
                             found = True
                             break
                     if not found:
-                        inventories = data_provider.fetch_inventory_pool().get_units_in_other_endpoint(x["item_id"])
+                        inventories = data_provider.fetch_generic_endpoint_pool().get_units_in_other_endpoint(x["item_id"])
                         max_ordered = -1
                         max_inventory
                         for z in inventories:
@@ -161,11 +154,11 @@ class Generic_Model(Base):
                                 max_inventory = z
                         max_inventory["total_ordered"] -= x["amount"]
                         max_inventory["total_expected"] = y["total_on_hand"] + y["total_ordered"]
-                        data_provider.fetch_inventory_pool().update_inventory(max_inventory["id"], max_inventory)
+                        data_provider.fetch_generic_endpoint_pool().update_single(max_inventory["id"], max_inventory)
                 for x in current:
                     for y in collection:
                         if x["item_id"] == y["item_id"]:
-                            inventories = data_provider.fetch_inventory_pool().get_units_in_other_endpoint(x["item_id"])
+                            inventories = data_provider.fetch_generic_endpoint_pool().get_units_in_other_endpoint(x["item_id"])
                             max_ordered = -1
                             max_inventory
                             for z in inventories:
@@ -174,6 +167,6 @@ class Generic_Model(Base):
                                     max_inventory = z
                             max_inventory["total_ordered"] += y["amount"] - x["amount"]
                             max_inventory["total_expected"] = y["total_on_hand"] + y["total_ordered"]
-                            data_provider.fetch_inventory_pool().update_inventory(max_inventory["id"], max_inventory)
+                            data_provider.fetch_generic_endpoint_pool().update_single(max_inventory["id"], max_inventory)
                 shipment["items"] = collection
-                self.update_shipment(endpoint_unit_id, shipment)
+                self.update_single(endpoint_unit_id, shipment)
