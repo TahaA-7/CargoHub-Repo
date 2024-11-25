@@ -1,6 +1,6 @@
 import requests
 import time
-BASE_URL = 'http://localhost:3000/api/v1'
+BASE_URL = 'http://localhost:8000/api/v1'
 
 HEADER = {"API_KEY" : "a1b2c3d4e5"}
 
