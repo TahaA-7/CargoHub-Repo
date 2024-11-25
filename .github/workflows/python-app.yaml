@@ -80,7 +80,7 @@ jobs:
             git pull origin main
   
             # Optional: If you're using Docker, rebuild the containers and restart them
-            docker-compose up -d --build
+            nohup python3 ./api/main.py &
 
           EOF
           
