@@ -41,6 +41,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         path: coverage.xml
+
       if: ${{ failure() }}
     - name: Set up SSH
       run: |
@@ -55,32 +56,45 @@ jobs:
           # Commands to deploy your application (for example)
           cd /path/to/your/app
           git pull origin main
-          docker-compose up -d --build
+
         EOF
   deployment:
     runs-on: ubuntu-latest
-    environment: production
     needs: build
+    environment: production
     steps:
-      - name: deploy
+      - name: set up SSH
         run: |
-          # Add your deployment-specific steps here
-          # Set up SSH to allow authentication
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
   
-          # SSH into your server and execute deployment commands
+      - name: Deploy Django Application
+        run: |
           ssh ubuntu@145.24.223.158 << 'EOF'
-            # Navigate to the application directory
-            cd /path/to/your/app
-  
-            # Pull the latest code from the repository
-            git pull origin main
-  
-            # Optional: If you're using Docker, rebuild the containers and restart them
-            docker-compose up -d --build
+            # Navigate to your Django app directory
+            cd /CargoHub-Repo/cargohub
 
+            # Pull the latest code
+            git pull origin main
+
+            # Activate virtual environment
+            source venv/bin/activate
+
+            # Install dependencies
+            pip install -r requirements.txt
+
+            # Run Django migrations
+            python manage.py migrate --noinput
+
+            # Collect static files
+            python manage.py collectstatic --noinput
+
+            # Restart the application server (adjust based on your setup)
+            sudo systemctl restart gunicorn
+
+            # Optional: Restart your reverse proxy (if using Nginx/Apache)
+            sudo systemctl reload nginx
           EOF
           

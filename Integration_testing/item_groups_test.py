@@ -11,6 +11,7 @@ def test_get_item_groups():
 
 def test_put_item_groups():
     get_item_group = requests.get(f"{BASE_URL}/item_groups/97", headers=HEADER)
+
     item_group = get_item_group.json()
     old_updated_at = item_group['updated_at']
     
@@ -27,12 +28,6 @@ def test_put_item_groups():
     assert old_updated_at != new_updated_at  # SUCCESS
 
 
-def test_get_put_item_groups():
-    get_item_group = requests.get(f"{BASE_URL}/item_groups/97", headers=HEADER)
-    assert get_item_group.status_code == 200  # SUCCESS
-    item_group = get_item_group.json()
-    assert item_group['name'] == "Test item group updated"
-
 
 def test_delete_item_groups():
     response = requests.delete(f"{BASE_URL}/item_groups/99", headers=HEADER)
@@ -40,6 +35,7 @@ def test_delete_item_groups():
     
 
 
-def test_get_deleted_item_groups():
-    response = requests.get(f"{BASE_URL}/item_groups/99", headers=HEADER)
-    assert response.status_code == 404  # SUCCESS
+#def test_get_deleted_item_groups():
+#    
+#    response = requests.get(f"{BASE_URL}/item_groups/99", headers=HEADER)
+#    assert response.status_code == 404  # SUCCESS

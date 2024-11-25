@@ -56,7 +56,10 @@ def test_get_posted_item():
 
 
 def test_put_item():
-    get_item = requests.get(f"{BASE_URL}/items/P000001", headers=HEADER)
+    get_item = requests.get(f"{BASE_URL}/items/1", headers=HEADER)
+    print(f"Status Code: {get_item.status_code}")
+    print(f"Response Text: {get_item.text}")
+    
     item = get_item.json()
     old_updated_at = item['updated_at']
     # old_warehouse_code = 'YQZZNL56'
@@ -66,7 +69,7 @@ def test_put_item():
     
     assert response.status_code == 200  # SUCCESS
 
-    get_item2 = requests.get(f"{BASE_URL}/items/P000001", headers=HEADER)
+    get_item2 = requests.get(f"{BASE_URL}/items/1", headers=HEADER)
     item2 = get_item2.json()
     new_updated_at = item2['updated_at']
 
