@@ -34,7 +34,7 @@ jobs:
         pytest ./Calculator --cov --cov-report term --cov-report xml:coverage.xml
     - name: Test with pytest
       run: |
-        coverage run -m pytest
+        coverage run -m pytest ./Calculator
     - name: Run code coverage
       run: |
         # Run coverage report
