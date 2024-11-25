@@ -29,33 +29,58 @@ jobs:
     #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
     #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test with pytest and coverage
       run: |
         pytest
         pytest --cov --cov-report term --cov-report xml:coverage.xml
-    - name: Test with pytest
-      run: |
-        coverage run -m pytest 
-    - name: Run code coverage
-      run: |
-        # Run coverage report
-        #coverage xml
-
-        # Report and write to summary.
+        coverage run -m pytest
         coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
-
-        # Report again and fail if under 100%.
         coverage report --fail-under=100
+
     - name: Store coverage report
       uses: actions/upload-artifact@v4
       with:
         path: coverage.xml
       if: ${{ failure() }}
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
+    # Deploy to the server
+    - name: Deploy application
+      run: |
+        ssh ubuntu@145.24.223.158 << 'EOF'
+          # Commands to deploy your application (for example)
+          cd /path/to/your/app
+          git pull origin main
+          docker-compose up -d --build
+        EOF
   deployment:
     runs-on: ubuntu-latest
     environment: production
+    needs: build
     steps:
       - name: deploy
         run: |
           # Add your deployment-specific steps here
-          echo "Deploying the application..."
+          # Set up SSH to allow authentication
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
+  
+          # SSH into your server and execute deployment commands
+          ssh ubuntu@145.24.223.158 << 'EOF'
+            # Navigate to the application directory
+            cd /path/to/your/app
+  
+            # Pull the latest code from the repository
+            git pull origin main
+  
+            # Optional: If you're using Docker, rebuild the containers and restart them
+            docker-compose up -d --build
+
+          EOF
+          
