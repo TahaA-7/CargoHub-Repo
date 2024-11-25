@@ -29,25 +29,25 @@ jobs:
     #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
     #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    # - name: Test with pytest and coverage
-    #   run: |
-    #     pytest
-    #     pytest --cov --cov-report term --cov-report xml:coverage.xml
-    #     coverage run -m pytest
-    #     coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
-    #     coverage report --fail-under=100
+    - name: Test with pytest and coverage
+      run: |
+        pytest
+        pytest --cov --cov-report term --cov-report xml:coverage.xml
+        coverage run -m pytest
+        coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
+        coverage report --fail-under=100
 
-    # - name: Store coverage report
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     path: coverage.xml
-    #   if: ${{ failure() }}
-    # - name: Set up SSH
-    #   run: |
-    #     mkdir -p ~/.ssh
-    #     echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
-    #     chmod 600 ~/.ssh/id_rsa
-    #     ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
+    - name: Store coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        path: coverage.xml
+      if: ${{ failure() }}
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
     # Deploy to the server
 
   deployment:
@@ -57,72 +57,22 @@ jobs:
     steps:
       - name: deploy
         run: |
-          # Set up SSH
+          # Add your deployment-specific steps here
+          # Set up SSH to allow authentication
           mkdir -p ~/.ssh
-          echo "-----BEGIN OPENSSH PRIVATE KEY-----
-          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
-          -----END OPENSSH PRIVATE KEY-----" > ~/.ssh/id_rsa
-          chmod 700 ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
-
-          # SSH into server
-          ssh -i ~/.ssh/id_rsa ubuntu@145.24.223.158 << 'EOF'
-            set -e  # Exit on error
-
+  
+          # SSH into your server and execute deployment commands
+          ssh ubuntu@145.24.223.158 << 'EOF'
             # Navigate to the application directory
-            cd /path/to/your/app || { echo "Directory not found"; exit 1; }
+            cd /path/to/your/app
+  
+            # Pull the latest code from the repository
+            git pull origin main
+  
+            nohup python3 ./api/main.py &
 
-            # Pull the latest code
-            git pull origin main || { echo "Git pull failed"; exit 1; }
-
-            # Start the Python script
-            nohup python3 ./api/main.py > /dev/null 2>&1 &
           EOF
+          
