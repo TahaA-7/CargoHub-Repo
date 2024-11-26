@@ -46,10 +46,13 @@ jobs:
 
     - name: Set up SSH
       run: |
-        rm -f ~/.ssh && mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
-        chmod 600 ~/.ssh/id_rsa_new
-        ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
+        mkdir -p $HOME/.ssh
+        touch $HOME/.ssh/id_rsa_new
+        echo "" > $HOME/.ssh/id_rsa_new
+        chmod 600 $HOME/.ssh/id_rsa_new
+        touch $HOME/.ssh/known_hosts
+        ssh-keyscan -H 145.24.223.158 >> $HOME/.ssh/known_hosts
+        chmod 700 $HOME/.ssh
     # Deploy to the server
     - name: Deploy application
       run: |
