@@ -46,7 +46,6 @@ jobs:
 
     - name: Set up SSH
       run: |
-        mkdir -p $HOME/.ssh
         touch $HOME/.ssh/id_rsa_new
         echo "" > $HOME/.ssh/id_rsa_new
         chmod 600 $HOME/.ssh/id_rsa_new
