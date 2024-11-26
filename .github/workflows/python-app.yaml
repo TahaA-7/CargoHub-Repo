@@ -46,7 +46,7 @@ jobs:
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
     # Deploy to the server
@@ -66,8 +66,8 @@ jobs:
       - name: set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
+          chmod 600 ~/.ssh/id_rsa_new
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
   
       - name: Deploy Django Application
