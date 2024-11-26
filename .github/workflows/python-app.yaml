@@ -92,10 +92,6 @@ jobs:
             # Collect static files
             python manage.py collectstatic --noinput
 
-            # Restart the application server (adjust based on your setup)
-            sudo systemctl restart gunicorn
-
-            # Optional: Restart your reverse proxy (if using Nginx/Apache)
-            sudo systemctl reload nginx
+           
           EOF
           
