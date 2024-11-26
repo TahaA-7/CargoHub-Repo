@@ -43,10 +43,7 @@ jobs:
         path: coverage.xml
 
       if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        path: coverage.xml
-        
+
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
