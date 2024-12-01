@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories
 
 class ClientSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
@@ -13,6 +13,9 @@ class ClientSerializer(serializers.ModelSerializer):
     contact_email = serializers.EmailField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+    class Meta:
+        model = Clients  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 
 class WarehousesSerializer(serializers.ModelSerializer):
@@ -28,6 +31,10 @@ class WarehousesSerializer(serializers.ModelSerializer):
     contact_email = serializers.EmailField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+    class Meta:
+        model = Warehouses  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
+
 
 
 class SuppliersSerializer(serializers.ModelSerializer):
@@ -44,7 +51,9 @@ class SuppliersSerializer(serializers.ModelSerializer):
     reference = serializers.CharField(max_length=20)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Suppliers  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
     
 
@@ -62,7 +71,9 @@ class ShipmentsSerializer(serializers.ModelSerializer):
     reference = serializers.CharField(max_length=20)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Shipments  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 
 class TransfersSerializer(serializers.ModelSerializer):
@@ -72,7 +83,9 @@ class TransfersSerializer(serializers.ModelSerializer):
     transfer_status = serializers.CharField(max_length=255, required=True)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Transfers  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
     
 
@@ -96,7 +109,9 @@ class OrdersSerializer(serializers.ModelSerializer):
     total_surcharge = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Orders  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 
 
@@ -105,9 +120,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Orders.objects.all())
     item_id = serializers.CharField(max_length=50)
     amount = serializers.IntegerField()
-
-
-    
+    class Meta:
+        model = Orders  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 
 class LocationsSerializer(serializers.ModelSerializer):
@@ -116,13 +131,18 @@ class LocationsSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+    class Meta:
+        model = Locations  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 class ItemsSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Items  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 
 class ItemLinesSerializer(serializers.ModelSerializer):
@@ -130,7 +150,9 @@ class ItemLinesSerializer(serializers.ModelSerializer):
     description = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Item_lines  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 
 class ItemTypesSerializer(serializers.ModelSerializer):
@@ -138,14 +160,18 @@ class ItemTypesSerializer(serializers.ModelSerializer):
     description = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Item_types  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 class ItemGroupsSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-
+    class Meta:
+        model = Item_groups  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
 
 class InventoriesSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
@@ -159,3 +185,6 @@ class InventoriesSerializer(serializers.ModelSerializer):
     contact_email = serializers.EmailField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+    class Meta:
+        model = Inventories  # Replace `Client` with the actual model name
+        fields = '__all__'  # Or specify the list of fields you want to include
