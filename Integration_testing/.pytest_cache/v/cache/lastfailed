@@ -8,12 +8,12 @@
   "item_groups_test.py::test_put_item_groups": true,
   "item_groups_test.py::test_get_put_item_groups": true,
   "item_groups_test.py::test_delete_item_groups": true,
-  "item_lines_test.py::test_put_item_lines": true,
-  "item_lines_test.py::test_get_put_item_lines": true,
-  "item_lines_test.py::test_delete_item_lines": true,
-  "item_lines_test.py::test_get_deleted_item_lines": true,
   "item_types_test.py::test_put_item_types": true,
   "item_types_test.py::test_get_put_item_types": true,
   "item_types_test.py::test_delete_item_types": true,
-  "item_groups_test.py::test_get_item_groups": true
+  "item_groups_test.py::test_get_item_groups": true,
+  "test_orders.py::test_get_deleted_order": true,
+  "test_shipments.py::test_put_shipment": true,
+  "test_shipments.py::test_delete_shipment": true,
+  "test_shipments.py::test_post_shipment": true
 }
