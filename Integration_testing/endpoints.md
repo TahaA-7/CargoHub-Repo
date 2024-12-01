@@ -12,7 +12,7 @@ GET http://localhost:8000/api/v1/items -> return all items ---Works
 GET http://localhost:8000/api/v1/items/{id} -> return specific item ---Works
 GET http://localhost:8000/api/v1/items/{id}/inventory -> return specific item inventories of locations ---Does not work?
 GET http://localhost:8000/api/v1/items/{id}/inventory/totals -> return total stats of specific item ---Does not work?
-POST http://localhost:8000/api/v1/items -> add item ---Does not work
+POST http://localhost:8000/api/v1/items -> add item ---Does not work ---tries to add an integer to a string because the current data has a string as an uid, only works if case is empty
 PUT http://localhost:8000/api/v1/items/{id} -> update existing item ---Works
 DELETE http://localhost:8000/api/v1/items/{id} -> remove existing item ---Works
 ###
