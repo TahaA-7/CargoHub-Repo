@@ -39,7 +39,7 @@ class Orders(Base):
             if x["ship_to"] == client_id or x["bill_to"] == client_id:
                 result.append(x)
         return result
-
+    
     def add_order(self, order):
         order["created_at"] = self.get_timestamp()
         order["updated_at"] = self.get_timestamp()

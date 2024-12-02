@@ -10,6 +10,7 @@ class Items(Base):
         self.data_path = root_path + "items.json"
         self.load(is_debug)
 
+        
     def get_items(self):
         return self.data
 

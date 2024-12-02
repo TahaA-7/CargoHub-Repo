@@ -4,7 +4,7 @@ BASE_URL = 'http://localhost:8000/api/v1'
 
 HEADER = {"API_KEY" : "a1b2c3d4e5"}
 
-def test_data_post_item():
+def test_post_item():
     new_item= {"uid": "P000001",
         "code": "sjQ23408K",
         "description": "Face-to-face clear-thinking complexity",
