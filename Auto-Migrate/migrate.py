@@ -1,4 +1,4 @@
-import csv, sqlite3, json, pandas
+import csv, sqlite3, json, os, pandas as pd
 
 
 all_files = [
@@ -40,5 +40,27 @@ for filename in all_files:
     new_csv.close()
 
 
-#df = pandas.read_csv(csvfile)
-#df.to_sql(table_name, conn, if_exists='append', index=False)
+csv_directory = "./data"
+
+sqlite_file = "test.db"
+
+conn = sqlite3.connect(sqlite_file)
+cursor = conn.cursor()
+
+
+for file_name in os.listdir(csv_directory):
+    if file_name.endswith('.csv'):
+        file_path = os.path.join(csv_directory, file_name)
+        table_name = os.path.splitext(f"api_{file_name}")[0]
+        
+
+        df = pd.read_csv(file_path)
+        df.to_sql(table_name, conn, if_exists='replace', index=False)
+        
+        print(f"Inserted data from {file_name} into table {table_name}")
+
+conn.commit()
+conn.close()
+
+print("worked")
+
