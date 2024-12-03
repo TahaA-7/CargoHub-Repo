@@ -66,8 +66,8 @@ jobs:
     steps:
       - name: set up SSH
         run: |
-          echo $HOME
-          mkdir -p $HOME/.ssh
+          set -x
+          mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
           chmod 600 ~/.ssh/id_rsa_new
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
