@@ -68,6 +68,7 @@ jobs:
         run: |
           set -x
           mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
           chmod 600 ~/.ssh/id_rsa_new
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
