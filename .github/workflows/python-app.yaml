@@ -74,6 +74,7 @@ jobs:
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
           chmod 600 ~/.ssh/id_rsa_new
           ssh-keygen -R 145.24.223.158
+          ping -c 4 145.24.223.158
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
   
       - name: Deploy Django Application
