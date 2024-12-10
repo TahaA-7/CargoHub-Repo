@@ -1,6 +1,6 @@
 import csv, sqlite3, json, os, pandas as pd
 
-
+#indexing all files from which we need to extract the data
 all_files = [
     "clients.json",
     "inventories.json",
@@ -16,6 +16,7 @@ all_files = [
     "warehouses.json",
 ]
 
+#looping through all files
 for filename in all_files:
     file_path = f"./data/{filename}"
 
@@ -23,13 +24,17 @@ for filename in all_files:
     with open(file_path) as file:
         data = json.load(file)
 
+    #taking the entire filename except .json
     filename = filename[:-5]
+
+    #creating new csv file with the old filename
     new_csv = open(f"./data/{filename}.csv", "w", encoding="utf-8")
     csv_writer = csv.writer(new_csv)
 
     count = 0
     for obj in data:
         if count == 0:
+            #creating headers for the new csv file
             header = obj.keys()
             csv_writer.writerow(header)
             count += 1
@@ -44,7 +49,10 @@ csv_directory = "./data"
 
 sqlite_file = "test.db"
 
+#making connection with newly created db
 conn = sqlite3.connect(sqlite_file)
+
+#allows postgresql commands during the session
 cursor = conn.cursor()
 
 
