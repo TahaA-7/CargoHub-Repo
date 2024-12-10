@@ -1,6 +1,7 @@
 import csv, sqlite3, json, os, pandas as pd
 
 #indexing all files from which we need to extract the data
+#perhaps refactor this to just read all existing data files in the directory instead of hardcoding it
 all_files = [
     "clients.json",
     "inventories.json",
