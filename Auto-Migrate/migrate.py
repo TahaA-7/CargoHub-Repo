@@ -60,16 +60,19 @@ cursor = conn.cursor()
 for file_name in os.listdir(csv_directory):
     if file_name.endswith('.csv'):
         file_path = os.path.join(csv_directory, file_name)
+
+        #renaming tables to start with "api_" otherwise django won't recognize it (no clue why)
         table_name = os.path.splitext(f"api_{file_name}")[0]
         
-
+        #converting csv to dataframes to sql tables, (versatile datastructure imported from the pandas library)
         df = pd.read_csv(file_path)
         df.to_sql(table_name, conn, if_exists='replace', index=False)
         
+        #log conformation
         print(f"Inserted data from {file_name} into table {table_name}")
 
 conn.commit()
 conn.close()
 
-print("worked")
+print("No issues, migration worked")
 
