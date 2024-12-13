@@ -70,9 +70,6 @@ def client_detail(request, pk):
     elif request.method == 'GET':
         return get_single_object(Clients, pk, ClientSerializer)
 
-
-
-
 @api_view(['GET', 'POST'])
 def warehouse_list(request):
     if request.method == 'GET':
@@ -127,9 +124,6 @@ def item_group_detail(request, pk):
     elif request.method == 'GET':
         return get_single_object(Item_groups, pk, ItemGroupsSerializer)
     
-
-
-
 
 @api_view(['GET', 'POST'])
 def item_lines_list(request):
