@@ -66,9 +66,15 @@ jobs:
     steps:
       - name: set up SSH
         run: |
+          set -x
           mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 644 ~/.ssh/known_hosts
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
           chmod 600 ~/.ssh/id_rsa_new
+          ssh-keygen -R 145.24.223.158
+          ping -c 4 145.24.223.158
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
   
       - name: Deploy Django Application
@@ -92,10 +98,6 @@ jobs:
             # Collect static files
             python manage.py collectstatic --noinput
 
-            # Restart the application server (adjust based on your setup)
-            sudo systemctl restart gunicorn
-
-            # Optional: Restart your reverse proxy (if using Nginx/Apache)
-            sudo systemctl reload nginx
+           
           EOF
           

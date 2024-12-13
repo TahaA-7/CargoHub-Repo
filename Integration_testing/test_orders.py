@@ -408,7 +408,7 @@ def test_delete_order():
 def test_get_deleted_order():
 
     response = requests.get(f"{BASE_URL}/orders/1", headers=HEADER)
-    assert response.json() == None
+    assert response.status_code == 404
 
 
 

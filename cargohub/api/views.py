@@ -31,7 +31,7 @@ def get_objects(model, serializer_class):
     serializer = serializer_class(objects, many=True)
     return Response(serializer.data)
 
-def get_single_object(model, pk, serializer_class):
+def get_object(model, pk, serializer_class):
     try:
         obj = model.objects.get(pk=pk)
     except model.DoesNotExist:
@@ -68,7 +68,7 @@ def client_detail(request, pk):
     elif request.methot == 'PUT':
         return update_object(Clients, pk, ClientSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Clients, pk, ClientSerializer)
+        return get_object(Clients, pk, ClientSerializer)
 
 @api_view(['GET', 'POST'])
 def warehouse_list(request):
@@ -84,7 +84,7 @@ def warehouse_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Warehouses, pk, WarehousesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Warehouses, pk, WarehousesSerializer)
+        return get_object(Warehouses, pk, WarehousesSerializer)
 
 
 
@@ -103,7 +103,7 @@ def inventory_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Inventories, pk, InventoriesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Inventories, pk, InventoriesSerializer)
+        return get_object(Inventories, pk, InventoriesSerializer)
 
 
 
@@ -122,7 +122,7 @@ def item_group_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Item_groups, pk, ItemGroupsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Item_groups, pk, ItemGroupsSerializer)
+        return get_object(Item_groups, pk, ItemGroupsSerializer)
     
 
 @api_view(['GET', 'POST'])
@@ -139,7 +139,7 @@ def item_lines_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Item_lines, pk, ItemLinesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Item_lines, pk, ItemLinesSerializer)
+        return get_object(Item_lines, pk, ItemLinesSerializer)
 
 
 
@@ -159,7 +159,7 @@ def item_types_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Item_types, pk, ItemTypesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Item_types, pk, ItemTypesSerializer)
+        return get_object(Item_types, pk, ItemTypesSerializer)
 
 
 
@@ -179,7 +179,7 @@ def item_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Items, pk, ItemsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Items, pk, ItemsSerializer)
+        return get_object(Items, pk, ItemsSerializer)
 
 
 
@@ -199,7 +199,7 @@ def location_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Locations, pk, LocationsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Locations, pk, LocationsSerializer)
+        return get_object(Locations, pk, LocationsSerializer)
 
 
 
@@ -219,7 +219,7 @@ def order_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Orders, pk, OrdersSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Orders, pk, OrdersSerializer)
+        return get_object(Orders, pk, OrdersSerializer)
 
 
 
@@ -239,7 +239,7 @@ def shipment_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Shipments, pk, ShipmentsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Shipments, pk, ShipmentsSerializer)
+        return get_object(Shipments, pk, ShipmentsSerializer)
 
 
 
@@ -259,7 +259,7 @@ def supplier_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Suppliers, pk, SuppliersSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Suppliers, pk, SuppliersSerializer)
+        return get_object(Suppliers, pk, SuppliersSerializer)
 
 
 
@@ -279,4 +279,4 @@ def transfer_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Transfers, pk, TransfersSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Transfers, pk, TransfersSerializer)
+        return get_object(Transfers, pk, TransfersSerializer)
