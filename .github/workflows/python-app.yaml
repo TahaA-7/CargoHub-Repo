@@ -79,12 +79,12 @@ jobs:
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
   
       - name: Deploy Django Application
-      run: |
-        ssh -t ubuntu@145.24.223.158 << 'EOF'
-          cd /CargoHub-Repo/cargohub || exit 1
-          git pull origin main || exit 1
-          source venv/bin/activate || exit 1
-          pip install -r requirements.txt || exit 1
-          python manage.py migrate --noinput || exit 1
-          python manage.py collectstatic --noinput || exit 1
-        EOF
+        run: |
+          ssh -t ubuntu@145.24.223.158 << 'EOF'
+            cd /CargoHub-Repo/cargohub || exit 1
+            git pull origin main || exit 1
+            source venv/bin/activate || exit 1
+            pip install -r requirements.txt || exit 1
+            python manage.py migrate --noinput || exit 1
+            python manage.py collectstatic --noinput || exit 1
+          EOF
