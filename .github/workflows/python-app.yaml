@@ -77,13 +77,11 @@ jobs:
 
       - name: Deploy Django Application
         run: |
-          ssh -v -i ~/.ssh/id_rsa_new -T git@github.com
-          ssh -i ~/.ssh/id_rsa_new ubuntu@145.24.223.158 << 'EOF'
-            cd /CargoHub-Repo/cargohub || exit 1
-            git pull origin main || exit 1
-            source venv/bin/activate || exit 1
-            pip install -r requirements.txt || exit 1
-            python manage.py migrate --noinput || exit 1
-            python manage.py collectstatic --noinput || exit 1
-          EOF
+          cd /CargoHub-Repo/cargohub || exit 1
+          git pull origin main || exit 1
+          source venv/bin/activate || exit 1
+          pip install -r requirements.txt || exit 1
+          python manage.py migrate --noinput || exit 1
+          python manage.py collectstatic --noinput || exit 1
+        
 
