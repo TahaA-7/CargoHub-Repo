@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories
 from .serializers import ClientSerializer, WarehousesSerializer, SuppliersSerializer, ShipmentsSerializer, OrdersSerializer, OrderItemSerializer, LocationsSerializer, ItemsSerializer, ItemLinesSerializer, ItemGroupsSerializer, ItemTypesSerializer, TransfersSerializer, InventoriesSerializer
 
@@ -286,3 +288,52 @@ def transfer_detail(request, pk):
         return update_object(Transfers, pk, TransfersSerializer, request.data)
     elif request.method == 'GET':
         return get_object(Transfers, pk, TransfersSerializer)
+    
+
+
+@api_view(['POST'])
+def transfer_commit(request, transfer_id):
+    try:
+        transfer = get_object_or_404(Transfers, id=transfer_id)
+
+        with transaction.atomic():
+            for item in transfer.items.all():
+                from_inventory = Inventories.objects.get(
+                    item_id=item.item_id, location_id=transfer.transfer_from
+                )
+                to_inventory = Inventories.objects.get(
+                    item_id=item.item_id, location_id=transfer.transfer_to
+                )
+                from_inventory.total_on_hand -= item.amount
+                from_inventory.total_expected = (
+                    from_inventory.total_on_hand + from_inventory.total_ordered
+                )
+                from_inventory.total_available = (
+                    from_inventory.total_on_hand - from_inventory.total_allocated
+                )
+                from_inventory.save()
+
+                to_inventory.total_on_hand += item.amount
+                to_inventory.total_expected = (
+                    to_inventory.total_on_hand + to_inventory.total_ordered
+                )
+                to_inventory.total_available = (
+                    to_inventory.total_on_hand - to_inventory.total_allocated
+                )
+                to_inventory.save()
+        
+        return Response(
+            {"message": "Transfer committed successfully."},
+            status=status.HTTP_200_OK
+        )
+
+    except Inventories.DoesNotExist:
+        return Response(
+            {"error": "Inventory record not found for the given item/location."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    except Exception as e:
+        return Response(
+            {"error": f"An error occurred: {str(e)}"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
