@@ -15,6 +15,7 @@ class Orders(Base):
         return self.data
 
     def get_order(self, order_id):
+        print("Current data:", self.data)
         for x in self.data:
             if x["id"] == order_id:
                 return x
@@ -103,9 +104,13 @@ class Orders(Base):
             self.update_order(x, order)
 
     def remove_order(self, order_id):
+        print("Before removal:", self.data)
         for x in self.data:
             if x["id"] == order_id:
                 self.data.remove(x)
+                print("After removal:", self.data)
+                return
+        print("Order not found for removal")
 
     def load(self, is_debug):
         if is_debug:

@@ -31,9 +31,6 @@ def test_get_posted_location():
     response = requests.get(f"{BASE_URL}/locations/{local_new_location['id']}", headers=HEADER)
     # check if the received data is the same as the data we posted
 
-
-
-
     assert response.status_code == 200  # SUCCESS
     assert response.json()['id'] == local_new_location['id']
 

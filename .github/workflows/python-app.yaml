@@ -44,21 +44,21 @@ jobs:
 
       if: always()
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
-        chmod 600 ~/.ssh/id_rsa_new
-        ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
-    # Deploy to the server
-    - name: Deploy application
-      run: |
-        ssh ubuntu@145.24.223.158 << 'EOF'
-          # Commands to deploy your application (for example)
-          cd /path/to/your/app
-          git pull origin main
-
-        EOF
+#    - name: Set up SSH
+#      run: |
+#        mkdir -p ~/.ssh
+#        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
+#        chmod 600 ~/.ssh/id_rsa_new
+#        ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
+#    # Deploy to the server
+#    - name: Deploy application
+#      run: |
+#        ssh ubuntu@145.24.223.158 << 'EOF'
+#          # Commands to deploy your application (for example)
+#          cd /path/to/your/app
+#          git pull origin main
+#
+#        EOF
   deployment:
     runs-on: ubuntu-latest
     needs: build
@@ -66,9 +66,15 @@ jobs:
     steps:
       - name: set up SSH
         run: |
+          set -x
           mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 644 ~/.ssh/known_hosts
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
           chmod 600 ~/.ssh/id_rsa_new
+          ssh-keygen -R 145.24.223.158
+          ping -c 4 145.24.223.158
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
   
       - name: Deploy Django Application
@@ -92,10 +98,6 @@ jobs:
             # Collect static files
             python manage.py collectstatic --noinput
 
-            # Restart the application server (adjust based on your setup)
-            sudo systemctl restart gunicorn
-
-            # Optional: Restart your reverse proxy (if using Nginx/Apache)
-            sudo systemctl reload nginx
+           
           EOF
           
