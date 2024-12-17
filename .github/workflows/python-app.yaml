@@ -96,6 +96,8 @@ jobs:
           # Activate the virtual environment
           source venv/bin/activate || exit 1
 
+          cd cargohub || exit 1
+
           # Install dependencies
           pip install -r requirements.txt || exit 1
           
