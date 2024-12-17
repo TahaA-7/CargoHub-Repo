@@ -13,11 +13,6 @@ jobs:
     # Replace 'ubuntu-latest' with your self-hosted runner label
     runs-on: [self-hosted, cicd]  # self-hosted runner group and label
     steps:
-     - name: Force clean workspace and reset permissions
-       run: |
-        sudo rm -rf /home/ubuntu-1069707/actions-runner/_work/CargoHub-Repo
-        sudo mkdir -p /home/ubuntu-1069707/actions-runner/_work/CargoHub-Repo
-        sudo chown -R $USER:$USER /home/ubuntu-1069707/actions-runner/_work/CargoHub-Repo
     - uses: actions/checkout@v4
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
