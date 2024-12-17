@@ -81,7 +81,7 @@ jobs:
 
       - name: Deploy Django Application
         run: |
-          cd /home/ubuntu-1069707/CargoHub/CargoHub-Repo/cargohub || exit 1
+          cd /home/ubuntu-1069707/CargoHub/CargoHub-Repo || exit 1
           git pull origin main || exit 1
           
           # Ensure python3-venv is installed
