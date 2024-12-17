@@ -14,6 +14,9 @@ jobs:
     runs-on: [self-hosted, cicd]  # self-hosted runner group and label
     steps:
     - uses: actions/checkout@v4
+      with:
+        clean: false
+        set-safe-directory: false
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
