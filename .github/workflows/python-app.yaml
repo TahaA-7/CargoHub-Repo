@@ -77,7 +77,7 @@ jobs:
       #     chmod 600 ~/.ssh/id_rsa_new
       #     ssh-keygen -R 145.24.223.158
       #     ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
-    - name: set up SSH
+      - name: set up SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
