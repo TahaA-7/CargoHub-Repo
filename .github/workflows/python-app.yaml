@@ -69,11 +69,21 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
+          chmod 600 ~/.ssh/id_rsa_new
           ssh-keyscan github.com >> ~/.ssh/known_hosts
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa_new
 
       - name: Deploy Django Application
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@145.24.223.158 'cd /CargoHub-Repo/cargohub && git pull'
-          
+          ssh -v -i ~/.ssh/id_rsa_new -T git@github.com
+          ssh -i ~/.ssh/id_rsa_new ubuntu@145.24.223.158 << 'EOF'
+            cd /CargoHub-Repo/cargohub || exit 1
+            git pull origin main || exit 1
+            source venv/bin/activate || exit 1
+            pip install -r requirements.txt || exit 1
+            python manage.py migrate --noinput || exit 1
+            python manage.py collectstatic --noinput || exit 1
+          EOF
+
