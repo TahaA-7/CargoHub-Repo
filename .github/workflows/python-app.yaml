@@ -79,7 +79,15 @@ jobs:
         run: |
           cd /home/ubuntu-1069707/CargoHub/CargoHub-Repo/cargohub || exit 1
           git pull origin main || exit 1
+          
+          # Check if venv exists, and if not, create it
+          if [ ! -d "venv" ]; then
+            python3 -m venv venv || exit 1
+          fi
+
+          # Activate the virtual environment
           source venv/bin/activate || exit 1
+          
           pip install -r requirements.txt || exit 1
           python manage.py migrate --noinput || exit 1
           python manage.py collectstatic --noinput || exit 1
