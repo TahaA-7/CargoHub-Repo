@@ -1,18 +1,24 @@
 from rest_framework import serializers
+from api.models import *
 
 
 class ClientSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=255)
-    address = serializers.CharField()
-    city = serializers.CharField(max_length=100)
-    zip_code = serializers.CharField(max_length=20)
-    province = serializers.CharField(max_length=100)
-    country = serializers.CharField(max_length=100)
-    contact_name = serializers.CharField(max_length=255)
-    contact_phone = serializers.CharField(max_length=50)
-    contact_email = serializers.EmailField()
-    created_at = serializers.DateTimeField()
+    # name = serializers.CharField(max_length=255)
+    # address = serializers.CharField()
+    # city = serializers.CharField(max_length=100)
+    # zip_code = serializers.CharField(max_length=20)
+    # province = serializers.CharField(max_length=100)
+    # country = serializers.CharField(max_length=100)
+    # contact_name = serializers.CharField(max_length=255)
+    # contact_phone = serializers.CharField(max_length=50)
+    # contact_email = serializers.EmailField()
+    # created_at = serializers.DateTimeField()
+    # updated_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+    class Meta:
+        model = Clients
+        fields = ('name', 'address', 'city', 'zip_code', 'province', 'country', 'contact_name', 'contact_phone', 'contact_email', 'updated_at', 'created_at')
+        #fields = '__all__'
 
 
 class WarehousesSerializer(serializers.ModelSerializer):
@@ -134,10 +140,15 @@ class ItemLinesSerializer(serializers.ModelSerializer):
 
 
 class ItemTypesSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=255)
-    description = serializers.CharField()
-    created_at = serializers.DateTimeField()
-    updated_at = serializers.DateTimeField()
+    # name = serializers.CharField(max_length=255)
+    # description = serializers.CharField()
+    # created_at = serializers.DateTimeField()
+    # updated_at = serializers.DateTimeField()
+    class Meta:
+        model = Item_types
+        #fields = ('name', 'description', 'created_at', 'updated_at')
+        fields = '__all__'
+
 
 
 class ItemGroupsSerializer(serializers.ModelSerializer):

@@ -65,7 +65,7 @@ def client_list(request):
 def client_detail(request, pk):
     if request.method == 'DELETE':
         return delete_object(Clients, pk)
-    elif request.methot == 'PUT':
+    elif request.method == 'PUT':
         return update_object(Clients, pk, ClientSerializer, request.data)
     elif request.method == 'GET':
         return get_single_object(Clients, pk, ClientSerializer)

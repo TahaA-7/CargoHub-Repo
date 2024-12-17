@@ -1,0 +1,106 @@
+@startuml
+
+'Classes:
+'-------------
+
+class Clients {
+    + Client
+    ---
+    + client info
+    + contact info
+}
+
+class Inventories {
+    + Inventory
+    ---
+    + item details info
+    + locations collection
+    + item inventory info
+}
+
+class Items {
+    + Item
+    ---
+    + item details info
+    + item line, item group, item type
+    + purchase and order info
+    + supplier info
+}
+
+class Item_lines {
+    + Item_line
+    ---
+    + name & description
+}
+
+class Item_types {
+    + Item_type
+    ---
+    + name & description
+}
+
+class Item_groups {
+    + Item_group
+    ---
+    + name & description
+}
+
+class Warehouses {
+    + Warehouse
+    ---
+    + warehouse info
+    + contact info
+}
+
+class Suppliers {
+    + Supplier
+    ---
+    + supplier info
+}
+
+class Shipments {
+    + Shipment
+    ---
+    + shipment, source & carrier info
+    + package count and weight
+    ---
+    + items collection
+}
+
+class Transfers {
+    + Transfer
+    ---
+    + transfer info
+    + reference: uid
+    ---
+    + items collection 
+}
+
+class Orders {
+    + Order
+    ---
+    + order, source, warehouse & shipping info
+    + pricing totality info
+    ---
+    + items collection
+}
+
+class Locations {
+    + Location
+    ---
+    + warehouse & location info
+}
+
+'Associations:
+'-------------
+
+Items -> Item_groups
+Items -> Item_lines
+Items -> Item_types
+Orders -- Items
+Transfers -- Items
+Shipments -- Items
+Inventories -- Locations
+Locations -- Warehouses
+
+@enduml

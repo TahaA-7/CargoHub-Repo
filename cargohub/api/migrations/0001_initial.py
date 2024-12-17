@@ -30,6 +30,16 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='ClientsContact',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('contact_name', models.CharField(max_length=255)),
+                ('contact_phone', models.CharField(max_length=50)),
+                ('contact_email', models.EmailField()),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contacts', to='api.clients')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Inventories',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
@@ -74,6 +84,13 @@ class Migration(migrations.Migration):
                 ('description', models.TextField()),
                 ('created_at', models.DateTimeField()),
                 ('updated_at', models.DateTimeField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Item',
+            fields=[
+                ('item_id', models.AutoField(primary_key=True, serialize=False)),
+                ('amount', models.IntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(
@@ -123,6 +140,15 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='OrderItem',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('item_id', models.CharField(max_length=50)),
+                ('amount', models.IntegerField()),
+                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='api.orders')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Shipments',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
@@ -139,6 +165,15 @@ class Migration(migrations.Migration):
                 ('reference', models.CharField(max_length=20)),
                 ('created_at', models.DateTimeField()),
                 ('updated_at', models.DateTimeField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ShipmentItem',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('item_id', models.CharField(max_length=50)),
+                ('amount', models.IntegerField()),
+                ('shipment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='api.shipments')),
             ],
         ),
         migrations.CreateModel(
@@ -173,6 +208,15 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='TransferItem',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('item_id', models.CharField(max_length=50)),
+                ('amount', models.IntegerField()),
+                ('transfer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='api.transfers')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Warehouses',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
@@ -191,12 +235,13 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='OrderItem',
+            name='WarehouseContact',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('item_id', models.CharField(max_length=50)),
-                ('amount', models.IntegerField()),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='api.orders')),
+                ('contact_name', models.CharField(max_length=255)),
+                ('contact_phone', models.CharField(max_length=50)),
+                ('contact_email', models.EmailField()),
+                ('warehouse', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contacts', to='api.warehouses')),
             ],
         ),
     ]
