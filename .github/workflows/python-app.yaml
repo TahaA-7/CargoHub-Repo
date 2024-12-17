@@ -74,15 +74,10 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa_new
-      - name: Set up Python virtual environment
-        run: |
-          sudo python3 -m venv venv
-          sudo source venv/bin/activate
-          sudo pip install --upgrade pip
 
       - name: Deploy Django Application
         run: |
-          cd /home/ubuntu-1069707/CargoHub/CargoHub-Repo/cargohub || exit 1
+          cd /home/ubuntu-1069707/CargoHub/CargoHub-Repo || exit 1
           git pull origin main || exit 1
           
           # # Ensure python3-venv is installed
