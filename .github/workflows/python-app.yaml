@@ -84,18 +84,24 @@ jobs:
           cd /home/ubuntu-1069707/CargoHub/CargoHub-Repo/cargohub || exit 1
           git pull origin main || exit 1
           
-          # Check if venv exists, and if not, create it
+          # Ensure python3-venv is installed
+          sudo apt-get update || exit 1
+          sudo apt-get install -y python3-venv || exit 1
+          
+          # Create venv if it does not exist
           if [ ! -d "venv" ]; then
             python3 -m venv venv || exit 1
           fi
 
           # Activate the virtual environment
           source venv/bin/activate || exit 1
-          
+
+          # Install dependencies
           pip install -r requirements.txt || exit 1
+          
+          # Run migrations and collectstatic
           python manage.py migrate --noinput || exit 1
           python manage.py collectstatic --noinput || exit 1
-
 
         
 
