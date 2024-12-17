@@ -80,7 +80,7 @@ jobs:
   
       - name: Deploy Django Application
         run: |
-          ssh -t ubuntu@145.24.223.158 << 'EOF'
+          ssh -t -v ubuntu@145.24.223.158 << 'EOF'
             cd /CargoHub-Repo/cargohub || exit 1
             git pull origin main || exit 1
             source venv/bin/activate || exit 1
