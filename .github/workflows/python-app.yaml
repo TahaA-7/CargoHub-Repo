@@ -83,7 +83,7 @@ jobs:
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t ubuntu@145.24.223.158 << 'EOF'
+          ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t ubuntu@145.24.223.158 << 'EOF'
             cd /CargoHub-Repo/cargohub || exit 1
             git pull origin main || exit 1
             source venv/bin/activate || exit 1
