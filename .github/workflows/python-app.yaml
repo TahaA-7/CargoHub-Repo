@@ -80,7 +80,7 @@ jobs:
   
       - name: Deploy Django Application
         run: |
-          ssh ubuntu@145.24.223.158 << 'EOF'
+          ssh -v -t ubuntu@145.24.223.158 << 'EOF'
             # Navigate to your Django app directory
             cd /CargoHub-Repo/cargohub
 
