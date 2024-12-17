@@ -66,7 +66,7 @@ jobs:
     needs: build
     environment: production
     steps:
-      - name: set up SSH
+      - name: Set up SSH
         run: |
           set -x
           mkdir -p ~/.ssh
@@ -77,14 +77,25 @@ jobs:
           chmod 600 ~/.ssh/id_rsa_new
           ssh-keygen -R 145.24.223.158
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
-  
+
       - name: Deploy Django Application
         run: |
-          ssh -t ubuntu@145.24.223.158 << 'EOF'
+          ssh -v -t ubuntu@145.24.223.158 << 'EOF'
+            # Navigate to your Django app directory
             cd /CargoHub-Repo/cargohub || exit 1
+            
+            # Pull the latest code
             git pull origin main || exit 1
+            
+            # Activate virtual environment
             source venv/bin/activate || exit 1
+            
+            # Install dependencies
             pip install -r requirements.txt || exit 1
+            
+            # Run Django migrations
             python manage.py migrate --noinput || exit 1
+            
+            # Collect static files
             python manage.py collectstatic --noinput || exit 1
           EOF
