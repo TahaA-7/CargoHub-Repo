@@ -75,22 +75,5 @@ jobs:
 
       - name: Deploy Django Application
         run: |
-          ssh -v -t ubuntu@145.24.223.158 << 'EOF'
-            # Navigate to your Django app directory
-            cd /CargoHub-Repo/cargohub || exit 1
-            
-            # Pull the latest code
-            git pull origin main || exit 1
-            
-            # Activate virtual environment
-            source venv/bin/activate || exit 1
-            
-            # Install dependencies
-            pip install -r requirements.txt || exit 1
-            
-            # Run Django migrations
-            python manage.py migrate --noinput || exit 1
-            
-            # Collect static files
-            python manage.py collectstatic --noinput || exit 1
-          EOF
+          ssh -i ~/.ssh/id_rsa ubuntu@145.24.223.158 'cd /CargoHub-Repo/cargohub && git pull'
+          
