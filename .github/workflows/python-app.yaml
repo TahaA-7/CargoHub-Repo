@@ -66,21 +66,24 @@ jobs:
     needs: build
     environment: production
     steps:
-      - name: set up SSH
+      # - name: set up SSH
+      #   run: |
+      #     set -x
+      #     mkdir -p ~/.ssh
+      #     touch ~/.ssh/known_hosts
+      #     chmod 700 ~/.ssh
+      #     chmod 644 ~/.ssh/known_hosts
+      #     echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
+      #     chmod 600 ~/.ssh/id_rsa_new
+      #     ssh-keygen -R 145.24.223.158
+      #     ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
+    - name: set up SSH
         run: |
-          set -x
           mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          chmod 700 ~/.ssh
-          chmod 644 ~/.ssh/known_hosts
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
-          chmod 600 ~/.ssh/id_rsa_new
-          ssh-keygen -R 145.24.223.158
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
-  
-      - name: Deploy Django Application
-        run: |
-          ssh -t -v ubuntu@145.24.223.158 << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t ubuntu@145.24.223.158 << 'EOF'
             cd /CargoHub-Repo/cargohub || exit 1
             git pull origin main || exit 1
             source venv/bin/activate || exit 1
@@ -88,3 +91,15 @@ jobs:
             python manage.py migrate --noinput || exit 1
             python manage.py collectstatic --noinput || exit 1
           EOF
+  
+  
+      # - name: Deploy Django Application
+      #   run: |
+      #     ssh -t -v ubuntu@145.24.223.158 << 'EOF'
+      #       cd /CargoHub-Repo/cargohub || exit 1
+      #       git pull origin main || exit 1
+      #       source venv/bin/activate || exit 1
+      #       pip install -r requirements.txt || exit 1
+      #       python manage.py migrate --noinput || exit 1
+      #       python manage.py collectstatic --noinput || exit 1
+      #     EOF
