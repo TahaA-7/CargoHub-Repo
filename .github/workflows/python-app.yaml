@@ -68,15 +68,10 @@ jobs:
     steps:
       - name: Set up SSH
         run: |
-          set -x
           mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          chmod 700 ~/.ssh
-          chmod 644 ~/.ssh/known_hosts
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa_new
-          chmod 600 ~/.ssh/id_rsa_new
-          ssh-keygen -R 145.24.223.158
-          ssh-keyscan -H 145.24.223.158 >> ~/.ssh/known_hosts
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Deploy Django Application
         run: |
