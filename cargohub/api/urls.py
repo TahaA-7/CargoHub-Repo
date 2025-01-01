@@ -26,6 +26,7 @@ urlpatterns = [
     path('item_lines/<int:pk>/', views.item_lines_detail, name='item_lines_detail'),
     path('item_types/<int:pk>/', views.item_types_detail, name='item_types_detail'),
     path('transfers/<int:pk>/', views.transfer_detail, name='transfer_detail'),
+    path("transfers/<int:transfer_id>/commit/", views.transfer_commit, name="transfer_commit"),
     path('warehouses/<int:pk>/', views.warehouse_detail, name='warehouse_detail'),
     path('inventories/<int:pk>/', views.inventory_detail, name='inventory_detail'),
     path('locations/<int:pk>/', views.location_detail, name='location_detail'),

@@ -1,0 +1,29 @@
+@startuml
+
+!define RECTANGLE class
+
+actor Client
+
+rectangle "Django Web Application" {
+    rectangle "URL Routing" as URLRouting
+    rectangle "Views" as Views
+    rectangle "Models" as Models
+    rectangle "Database (SQLite)" as Database
+    rectangle "Testing" as Testing
+    rectangle "API" as API
+    rectangle "Serializers" as Serializers
+}
+
+Client --> URLRouting : Sends request
+URLRouting --> Views : Directs to
+Views --> Models : Fetches data
+Models --> Database : Queries
+Views --> API : Handles API requests
+API --> Serializers : Serializes data
+
+Testing -down-> "Test Cases" : Contains
+"Test Cases" --> Views : Tests Views
+"Test Cases" --> Models : Tests Models
+"Test Cases" --> API : Tests API
+
+@enduml

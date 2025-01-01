@@ -1,5 +1,19 @@
 {
-  "test_items.py::test_data_post_item": true,
   "test_locations.py::test_get_deleted_warehouse": true,
-  "test_orders.py::test_put_order_items": true
+  "test_orders.py::test_put_order_items": true,
+  "item_groups_test.py::test_get_deleted_item_groups": true,
+  "item_types_test.py::test_get_deleted_item_types": true,
+  "test_items.py::test_get_posted_item": true,
+  "test_items.py::test_put_item": true,
+  "item_groups_test.py::test_put_item_groups": true,
+  "item_groups_test.py::test_get_put_item_groups": true,
+  "item_groups_test.py::test_delete_item_groups": true,
+  "item_types_test.py::test_put_item_types": true,
+  "item_types_test.py::test_get_put_item_types": true,
+  "item_types_test.py::test_delete_item_types": true,
+  "item_groups_test.py::test_get_item_groups": true,
+  "test_orders.py::test_get_deleted_order": true,
+  "test_shipments.py::test_put_shipment": true,
+  "test_shipments.py::test_delete_shipment": true,
+  "test_shipments.py::test_post_shipment": true
 }

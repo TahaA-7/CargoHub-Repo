@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories
 from .serializers import ClientSerializer, WarehousesSerializer, SuppliersSerializer, ShipmentsSerializer, OrdersSerializer, OrderItemSerializer, LocationsSerializer, ItemsSerializer, ItemLinesSerializer, ItemGroupsSerializer, ItemTypesSerializer, TransfersSerializer, InventoriesSerializer
 
@@ -31,7 +33,7 @@ def get_objects(model, serializer_class):
     serializer = serializer_class(objects, many=True)
     return Response(serializer.data)
 
-def get_single_object(model, pk, serializer_class):
+def get_object(model, pk, serializer_class):
     try:
         obj = model.objects.get(pk=pk)
     except model.DoesNotExist:
@@ -68,10 +70,7 @@ def client_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Clients, pk, ClientSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Clients, pk, ClientSerializer)
-
-
-
+        return get_object(Clients, pk, ClientSerializer)
 
 @api_view(['GET', 'POST'])
 def warehouse_list(request):
@@ -87,7 +86,7 @@ def warehouse_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Warehouses, pk, WarehousesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Warehouses, pk, WarehousesSerializer)
+        return get_object(Warehouses, pk, WarehousesSerializer)
 
 
 
@@ -106,7 +105,7 @@ def inventory_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Inventories, pk, InventoriesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Inventories, pk, InventoriesSerializer)
+        return get_object(Inventories, pk, InventoriesSerializer)
 
 
 
@@ -125,11 +124,8 @@ def item_group_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Item_groups, pk, ItemGroupsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Item_groups, pk, ItemGroupsSerializer)
+        return get_object(Item_groups, pk, ItemGroupsSerializer)
     
-
-
-
 
 @api_view(['GET', 'POST'])
 def item_lines_list(request):
@@ -145,7 +141,7 @@ def item_lines_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Item_lines, pk, ItemLinesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Item_lines, pk, ItemLinesSerializer)
+        return get_object(Item_lines, pk, ItemLinesSerializer)
 
 
 
@@ -165,7 +161,7 @@ def item_types_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Item_types, pk, ItemTypesSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Item_types, pk, ItemTypesSerializer)
+        return get_object(Item_types, pk, ItemTypesSerializer)
 
 
 
@@ -185,7 +181,7 @@ def item_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Items, pk, ItemsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Items, pk, ItemsSerializer)
+        return get_object(Items, pk, ItemsSerializer)
 
 
 
@@ -205,7 +201,7 @@ def location_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Locations, pk, LocationsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Locations, pk, LocationsSerializer)
+        return get_object(Locations, pk, LocationsSerializer)
 
 
 
@@ -225,7 +221,7 @@ def order_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Orders, pk, OrdersSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Orders, pk, OrdersSerializer)
+        return get_object(Orders, pk, OrdersSerializer)
 
 
 
@@ -245,7 +241,7 @@ def shipment_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Shipments, pk, ShipmentsSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Shipments, pk, ShipmentsSerializer)
+        return get_object(Shipments, pk, ShipmentsSerializer)
 
 
 
@@ -265,7 +261,7 @@ def supplier_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Suppliers, pk, SuppliersSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Suppliers, pk, SuppliersSerializer)
+        return get_object(Suppliers, pk, SuppliersSerializer)
 
 
 
@@ -285,4 +281,53 @@ def transfer_detail(request, pk):
     elif request.method == 'PUT':
         return update_object(Transfers, pk, TransfersSerializer, request.data)
     elif request.method == 'GET':
-        return get_single_object(Transfers, pk, TransfersSerializer)
+        return get_object(Transfers, pk, TransfersSerializer)
+    
+
+
+@api_view(['POST'])
+def transfer_commit(request, transfer_id):
+    try:
+        transfer = get_object_or_404(Transfers, id=transfer_id)
+
+        with transaction.atomic():
+            for item in transfer.items.all():
+                from_inventory = Inventories.objects.get(
+                    item_id=item.item_id, location_id=transfer.transfer_from
+                )
+                to_inventory = Inventories.objects.get(
+                    item_id=item.item_id, location_id=transfer.transfer_to
+                )
+                from_inventory.total_on_hand -= item.amount
+                from_inventory.total_expected = (
+                    from_inventory.total_on_hand + from_inventory.total_ordered
+                )
+                from_inventory.total_available = (
+                    from_inventory.total_on_hand - from_inventory.total_allocated
+                )
+                from_inventory.save()
+
+                to_inventory.total_on_hand += item.amount
+                to_inventory.total_expected = (
+                    to_inventory.total_on_hand + to_inventory.total_ordered
+                )
+                to_inventory.total_available = (
+                    to_inventory.total_on_hand - to_inventory.total_allocated
+                )
+                to_inventory.save()
+        
+        return Response(
+            {"message": "Transfer committed successfully."},
+            status=status.HTTP_200_OK
+        )
+
+    except Inventories.DoesNotExist:
+        return Response(
+            {"error": "Inventory record not found for the given item/location."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    except Exception as e:
+        return Response(
+            {"error": f"An error occurred: {str(e)}"},
+            status=status.HTTP_400_BAD_REQUEST
+        )

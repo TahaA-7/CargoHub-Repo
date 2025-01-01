@@ -1,4 +1,19 @@
 [
+  "item_groups_test.py::test_delete_item_groups",
+  "item_groups_test.py::test_get_deleted_item_groups",
+  "item_groups_test.py::test_get_item_groups",
+  "item_groups_test.py::test_get_put_item_groups",
+  "item_groups_test.py::test_put_item_groups",
+  "item_lines_test.py::test_delete_item_lines",
+  "item_lines_test.py::test_get_deleted_item_lines",
+  "item_lines_test.py::test_get_item_lines",
+  "item_lines_test.py::test_get_put_item_lines",
+  "item_lines_test.py::test_put_item_lines",
+  "item_types_test.py::test_delete_item_types",
+  "item_types_test.py::test_get_deleted_item_types",
+  "item_types_test.py::test_get_item_types",
+  "item_types_test.py::test_get_put_item_types",
+  "item_types_test.py::test_put_item_types",
   "test_items.py::test_data_post_item",
   "test_items.py::test_delete_warehouse",
   "test_items.py::test_get_deleted_warehouse",
@@ -26,5 +41,9 @@
   "test_orders.py::test_get_updated_warehouse",
   "test_orders.py::test_put_order",
   "test_orders.py::test_put_order_items",
-  "test_orders.py::test_put_warehouse"
+  "test_orders.py::test_put_warehouse",
+  "test_shipments.py::test_delete_shipment",
+  "test_shipments.py::test_get_shipments",
+  "test_shipments.py::test_post_shipment",
+  "test_shipments.py::test_put_shipment"
 ]

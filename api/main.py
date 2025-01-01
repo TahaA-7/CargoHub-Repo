@@ -385,7 +385,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         api_key = self.headers.get("API_KEY")
         user = auth_provider.get_user(api_key)
     
-        if self.path == "/api/v1/":
+        if self.path == "/api/v1":
             self.send_response(200)
             self.end_headers()
             return
@@ -811,7 +811,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    PORT = 8000
+    PORT = 80
     with socketserver.TCPServer(("", PORT), ApiRequestHandler) as httpd:
         auth_provider.init()
         data_provider.init()
