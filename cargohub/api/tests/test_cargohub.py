@@ -13,7 +13,7 @@ class AuthIntegrationTests(TestCase):
     def test_auth(self):
         get_response = self.client.get('/api/clients/')
         self.assertEqual(get_response.headers['Content-Type'], 'application/json')
-        self.assertEqual(get_response.status_code, 403) # FAILED: RETURNS 200 BECAUSE AUTHORISATION NOT IMPLEMENTED YET
+        self.assertEqual(get_response.status_code, 403)  # FAILED: RETURNS 200 BECAUSE AUTHORISATION NOT IMPLEMENTED YET
 
     def test_nonexistent_endpoint_get(self):
         response = self.client.get('/api/nonexistent-endpoint/', **self.headers)
@@ -31,9 +31,9 @@ class ClientsIntegrationTests(TestCase):
         zip_code= "97349",
         province= "",
         country= "France",
-        contact_name= "Th\u00e9ophile Bailly",
-        contact_phone= "+33 (0)4 67 14 22 66",
-        contact_email= "marcelverdier@example.org",
+        # contact_name= "Th\u00e9ophile Bailly",
+        # contact_phone= "+33 (0)4 67 14 22 66",
+        # contact_email= "marcelverdier@example.org",
         created_at= "2012-12-04 10:44:27",
         updated_at= "2013-06-05 20:52:22")
         cls.api_key = "a1b2c3d4e5"

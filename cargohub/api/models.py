@@ -141,7 +141,7 @@ class Warehouses(models.Model):
 
 
 class WarehouseContact(models.Model):
-    client_contact = models.ForeignKey(Warehouses, related_name="items", on_delete=models.CASCADE)
+    warehouse_contact = models.ForeignKey(Warehouses, related_name="items", on_delete=models.CASCADE)
     contact_name = models.CharField(max_length=255)
     contact_phone = models.CharField(max_length=50)
     contact_email = models.EmailField()
@@ -185,7 +185,7 @@ class Shipments(models.Model):
     payment_type = models.CharField(max_length=20)
     transfer_mode = models.CharField(max_length=20)
     total_package_count = models.IntegerField(default=0)
-    total_package_weight = models.DecimalField(default=0.0)
+    total_package_weight = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
     # items = models.JSONField()
