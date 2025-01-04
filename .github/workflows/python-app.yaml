@@ -117,7 +117,7 @@ jobs:
           python manage.py collectstatic --noinput || exit 1
 
           # Restart Gunicorn to apply changes
-          sudo systemctl restart gunicorn || exit 1
+          python manage.py runserver 0.0.0.0:8000
 
         
 
