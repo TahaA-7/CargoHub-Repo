@@ -103,7 +103,10 @@ jobs:
           
           # Run migrations and collectstatic
           python manage.py migrate --noinput || exit 1
-          python manage.py runserver || exit 1
+          python manage.py collectstatic --noinput || exit 1
+
+          # Restart Gunicorn to apply changes
+          sudo systemctl restart gunicorn || exit 1
 
         
 
