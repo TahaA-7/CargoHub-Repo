@@ -5,7 +5,7 @@ from django.db import models
 #     id = models.AutoField(primary_key=True)
 #     name = models.CharField(max_length=255)
 #     created_at = models.DateTimeField()
-#     updated_at = models.DateTimeField()
+#     updated_at = models.DateTimeField(auto_now=True)
 
 # class Cliens(Base):
 #     id = Base.id
@@ -20,24 +20,24 @@ class Clients(models.Model):
     province = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     # contact = models.OneToOneField(Contact, on_delete=models.CASCADE, related_name="client")
-    # contact_name = models.CharField(max_length=255)
-    # contact_phone = models.CharField(max_length=50)
-    # contact_email = models.EmailField()
+    contact_name = models.CharField(max_length=255)
+    contact_phone = models.CharField(max_length=50)
+    contact_email = models.EmailField()
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
 
-class ClientContact(models.Model):
-    client_contact = models.ForeignKey(Clients, related_name="items", on_delete=models.CASCADE)
-    contact_name = models.CharField(max_length=255)
-    contact_phone = models.CharField(max_length=50)
-    contact_email = models.EmailField()
+# class ClientContact(models.Model):
+#     client_contact = models.ForeignKey(Clients, related_name="items", on_delete=models.CASCADE)
+#     contact_name = models.CharField(max_length=255)
+#     contact_phone = models.CharField(max_length=50)
+#     contact_email = models.EmailField()
 
-    def __str__(self):
-        return self.contact_name + " |\n" + self.contact_phone + " |\n" + self.contact_email + " |\n"
+#     def __str__(self):
+#         return self.contact_name + " |\n" + self.contact_phone + " |\n" + self.contact_email + " |\n"
     
 
 class Inventories(models.Model):
@@ -52,7 +52,7 @@ class Inventories(models.Model):
     total_allocated = models.IntegerField(default=0)
     total_available = models.IntegerField(default=0)
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Item {self.item_id}: {self.description}"
@@ -81,7 +81,7 @@ class Items(models.Model):
     supplier_code = models.CharField(max_length=255)
     supplier_part_number = models.CharField(max_length=255)
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.id + "   " + self.code
@@ -92,7 +92,7 @@ class Item_lines(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -103,7 +103,7 @@ class Item_types(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -114,7 +114,7 @@ class Item_groups(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -134,7 +134,7 @@ class Warehouses(models.Model):
     # contact_phone = models.CharField(max_length=50)
     # contact_email = models.EmailField()
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -164,7 +164,7 @@ class Suppliers(models.Model):
     phonenumber = models.CharField(max_length=50)
     reference = models.CharField(max_length=20)
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -187,7 +187,7 @@ class Shipments(models.Model):
     total_package_count = models.IntegerField(default=0)
     total_package_weight = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
     # items = models.JSONField()
 
     def __str__(self):
@@ -207,7 +207,7 @@ class Transfers(models.Model):
     transfer_to = models.CharField(max_length=4, null=True)
     transfer_status = models.CharField(max_length=255)
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
     # items = models.JSONField()
 
     def __str__(self):

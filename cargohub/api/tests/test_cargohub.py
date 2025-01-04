@@ -31,9 +31,9 @@ class ClientsIntegrationTests(TestCase):
         zip_code= "97349",
         province= "",
         country= "France",
-        # contact_name= "Th\u00e9ophile Bailly",
-        # contact_phone= "+33 (0)4 67 14 22 66",
-        # contact_email= "marcelverdier@example.org",
+        contact_name= "Theophile Bailly",
+        contact_phone= "+33 (0)4 67 14 22 66",
+        contact_email= "marcelverdier@example.org",
         created_at= "2012-12-04 10:44:27",
         updated_at= "2013-06-05 20:52:22")
         cls.api_key = "a1b2c3d4e5"
@@ -45,8 +45,8 @@ class ClientsIntegrationTests(TestCase):
         self.assertIn(self.item1.name, response.content.decode())
 
     def test_client_post_by_get(self):
-        get_response = self.client.get(f'/api/clients/9999', **self.headers)
-        self.assertEqual(get_response.status_code, 301)  # idk why 301 instead of 404
+        get_response = self.client.get(f'/api/clients/2966', **self.headers)
+        self.assertEqual(get_response.status_code, 301)  # idk why 301 instead of 404 when NOT `follow=True`
 
         get_response2 = self.client.get(f'/api/clients/{self.item1.id}', follow=True, **self.headers)
         self.assertEqual(get_response2.status_code, 200)
@@ -62,7 +62,7 @@ class ClientsIntegrationTests(TestCase):
 
         updated_client_data = {
             'country': 'French Guiana',
-            'updated_at': now()
+            'updated_at': now().isoformat()
         }
 
         put_response = self.client.put(
@@ -99,15 +99,15 @@ class ItemTypesIntegrationTests(TestCase):
             id=1, 
             name="Item1", 
             description="Description1", 
-            created_at=now(), 
-            updated_at=now()
+            created_at= "2012-12-04 10:44:30",
+            updated_at= "2013-06-05 20:52:20"
         )
         cls.item2 = Item_types.objects.create(
             id=2, 
             name="Item2", 
             description="Description2", 
-            created_at=now(), 
-            updated_at=now()
+            created_at= "2012-12-04 10:44:24",
+            updated_at= "2013-06-05 20:52:23"
         )
         cls.api_key = "a1b2c3d4e5"
         cls.headers = {"HTTP_AUTHORIZATION" : cls.api_key}
@@ -118,3 +118,28 @@ class ItemTypesIntegrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.item1.name, response.content.decode())
         self.assertIn(self.item2.name, response.content.decode())
+        self.assertNotEqual(self.item1, self.item2)
+
+    def test_item_type_put(self):
+        get_response = self.client.get(f'/api/item_types/{self.item1.id}', follow=True, **self.headers)
+        item_type = get_response.json()
+
+        old_updated_at = item_type['updated_at']
+        old_name = item_type['name']
+
+        self.assertEqual(old_name, 'Item1')
+
+        updated_item_type_data = {
+            'name': 'NOTItem1',
+            'updated_at': now().isoformat()
+        }
+
+        put_response = self.client.put(
+            f'/api/item_types/{self.item1.id}', follow=True, data=updated_item_type_data, content_type='application/json', **self.headers)
+        self.assertEqual(put_response.status_code, 200)
+
+        get_updated_item_type = self.client.get(f'/api/item_types/{self.item1.id}', follow=True, **self.headers)
+        updated_item_type = get_updated_item_type.json()
+        self.assertNotEqual(old_updated_at, updated_item_type['updated_at'])
+        self.assertNotEqual(old_name, updated_item_type['name'])
+        self.assertEqual(updated_item_type['name'], 'NOTItem1')

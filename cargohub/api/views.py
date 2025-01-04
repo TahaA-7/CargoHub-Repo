@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view, permission_classes
+#from django.shortcuts import render
+from rest_framework.decorators import api_view#, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
@@ -13,12 +13,15 @@ def update_object(model, pk, serializer_class, data):
     try:
         obj = model.objects.get(pk=pk)
     except model.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = serializer_class(obj, data=data)
+    serializer = serializer_class(obj, data=data, partial=True)
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+        try:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": f"Update failed: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def post_object(model, serializer_class, data):    
@@ -61,7 +64,7 @@ def client_list(request):
         return get_objects(Clients, ClientSerializer)
 
     elif request.method == 'POST':
-        post_object(Clients, ClientSerializer, request.data)
+        return post_object(Clients, ClientSerializer, request.data)
 
 @api_view(['DELETE', 'PUT', 'GET'])
 def client_detail(request, pk):
