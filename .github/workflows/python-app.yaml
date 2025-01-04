@@ -77,8 +77,9 @@ jobs:
 
       - name: Set up sudo without password
         run: |
-          sudo sh -c 'echo "ubuntu ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ubuntu'
-          
+          echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ubuntu
+          sudo chmod 0440 /etc/sudoers.d/ubuntu
+
       - name: Install python3-venv
         run: |
           sudo apt-get update || exit 1
