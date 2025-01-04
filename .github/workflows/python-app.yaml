@@ -74,6 +74,12 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa_new
+
+      - name: Set up sudo without password
+        run: |
+          echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ubuntu
+          sudo chmod 0440 /etc/sudoers.d/ubuntu
+
       - name: Install python3-venv
         run: |
           sudo apt-get update || exit 1
