@@ -80,10 +80,6 @@ jobs:
           echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ubuntu
           sudo chmod 0440 /etc/sudoers.d/ubuntu
 
-      - name: Start Gunicorn
-        run: |
-          source env/bin/activate
-          nohup gunicorn --bind 0.0.0.0:8000 cargohub.config.wsgi:application &
 
       - name: Install python3-venv
         run: |
@@ -106,6 +102,10 @@ jobs:
 
           # Activate the virtual environment
           source venv/bin/activate || exit 1
+
+          # Start gunicorn
+          source venv/bin/activate
+          nohup gunicorn --bind 0.0.0.0:8000 cargohub.config.wsgi:application &
 
           cd cargohub/ || exit 1
 
