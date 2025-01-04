@@ -105,6 +105,7 @@ jobs:
 
           # Start gunicorn
           source venv/bin/activate
+          export DJANGO_SETTINGS_MODULE="cargohub.config.settings"
           nohup gunicorn --bind 0.0.0.0:8000 cargohub.config.wsgi:application &
 
           cd cargohub/ || exit 1
