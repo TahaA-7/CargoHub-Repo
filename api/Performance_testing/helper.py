@@ -35,3 +35,39 @@ def get_locationsdb():
 
     conn.close()
     return all_locations
+
+def get_ordersdb():
+    conn = sqlite3.connect("test.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM orders")
+
+
+    rows = cursor.fetchall()
+    columns = [desc[0] for desc in cursor.description]
+
+
+    all_orders = []
+    for i, row in enumerate(rows):
+        row_dict = dict(zip(columns, row))
+        all_orders.append(row_dict)
+
+    conn.close()
+    return all_orders
+
+def get_clientsdb():
+    conn = sqlite3.connect("test.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM clients")
+
+
+    rows = cursor.fetchall()
+    columns = [desc[0] for desc in cursor.description]
+
+
+    all_clients = []
+    for i, row in enumerate(rows):
+        row_dict = dict(zip(columns, row))
+        all_clients.append(row_dict)
+
+    conn.close()
+    return all_clients

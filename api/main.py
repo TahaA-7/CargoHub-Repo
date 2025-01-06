@@ -5,7 +5,7 @@ import json
 
 from providers import auth_provider
 from providers import data_provider
-import Performance_testing
+import Performance_testing.helper
 from processors import notification_processor
 
 
@@ -64,7 +64,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             paths = len(path)
             match paths:
                 case 1:
-                    warehouses = Performance_testing.helper.get_locations()
+                    warehouses = Performance_testing.helper.get_locationsdb()
                     self.send_response(200)
                     self.send_header("Content-type", "application/json")
                     self.end_headers()
@@ -303,6 +303,18 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 case _:
                     self.send_response(404)
                     self.end_headers()
+        elif path[0] == "ordersdb":
+            paths = len(path)
+            match paths:
+                case 1:
+                    warehouses = Performance_testing.helper.get_ordersdb()
+                    self.send_response(200)
+                    self.send_header("Content-type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(warehouses).encode("utf-8"))
+                case _:
+                    self.send_response(404)
+                    self.end_headers()
         elif path[0] == "orders":
             paths = len(path)
             match paths:
@@ -330,6 +342,18 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                     else:
                         self.send_response(404)
                         self.end_headers()
+                case _:
+                    self.send_response(404)
+                    self.end_headers()
+        elif path[0] == "clientsdb":
+            paths = len(path)
+            match paths:
+                case 1:
+                    warehouses = Performance_testing.helper.get_clientsdb()
+                    self.send_response(200)
+                    self.send_header("Content-type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(warehouses).encode("utf-8"))
                 case _:
                     self.send_response(404)
                     self.end_headers()
