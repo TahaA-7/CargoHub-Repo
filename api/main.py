@@ -2,9 +2,10 @@ import socketserver
 import http.server
 import json
 
+
 from providers import auth_provider
 from providers import data_provider
-import Performance_testing.test_db_speed as test_db_speed
+import Performance_testing
 from processors import notification_processor
 
 
@@ -21,7 +22,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             paths = len(path)
             match paths:
                 case 1:
-                    warehouses = test_db_speed.get_warehousesdb()
+                    warehouses = Performance_testing.helper.get_warehousesdb()
                     self.send_response(200)
                     self.send_header("Content-type", "application/json")
                     self.end_headers()
@@ -29,7 +30,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 case _:
                     self.send_response(404)
                     self.end_headers()
-        if path[0] == "warehouses":
+        elif path[0] == "warehouses":
             paths = len(path)
             match paths:
                 case 1:
@@ -56,6 +57,18 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                     else:
                         self.send_response(404)
                         self.end_headers()
+                case _:
+                    self.send_response(404)
+                    self.end_headers()
+        elif path[0] == "locationsdb":
+            paths = len(path)
+            match paths:
+                case 1:
+                    warehouses = Performance_testing.helper.get_locations()
+                    self.send_response(200)
+                    self.send_header("Content-type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(warehouses).encode("utf-8"))
                 case _:
                     self.send_response(404)
                     self.end_headers()
