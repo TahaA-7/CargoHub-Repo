@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "formatted_address": "1234 Main St, Springfield, IL 62701",
+        "latitude": 39.781721
+    },
+    {
+        "formatted_address": "1234 Main St, Springfield, IL 62702",
+        "latitude": 39.781722
+    },
+    {
+        "formatted_address": "1234 Main St, Springfield, IL 62703",
+        "latitude": 39.781723
+    }
+]
