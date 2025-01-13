@@ -41,19 +41,19 @@ class WarehousesSerializer(serializers.ModelSerializer):
 
 
 class SuppliersSerializer(serializers.ModelSerializer):
-    # code = serializers.CharField(max_length=7)
-    # name = serializers.CharField(max_length=255)
-    # address = serializers.CharField()
-    # address_extra = serializers.CharField()
-    # city = serializers.CharField(max_length=100)
-    # zip = serializers.CharField(max_length=20)
-    # province = serializers.CharField(max_length=100)
-    # country = serializers.CharField(max_length=100)
-    # contact_name = serializers.CharField(max_length=255)
-    # phonenumber = serializers.CharField(max_length=50)
-    # reference = serializers.CharField(max_length=20)
-    # created_at = serializers.DateTimeField()
-    # updated_at = serializers.DateTimeField()
+    code = serializers.CharField(max_length=7)
+    name = serializers.CharField(max_length=255)
+    address = serializers.CharField()
+    address_extra = serializers.CharField()
+    city = serializers.CharField(max_length=100)
+    zip = serializers.CharField(max_length=20)
+    province = serializers.CharField(max_length=100)
+    country = serializers.CharField(max_length=100)
+    contact_name = serializers.CharField(max_length=255)
+    phonenumber = serializers.CharField(max_length=50)
+    reference = serializers.CharField(max_length=20)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
     class Meta:
         model = Suppliers  # Replace `Client` with the actual model name
         fields = '__all__'  # Or specify the list of fields you want to include

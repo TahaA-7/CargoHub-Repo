@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 # class Base(models.Model):
@@ -103,7 +104,12 @@ class Item_types(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Object is being created
+            self.updated_at = timezone.now()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

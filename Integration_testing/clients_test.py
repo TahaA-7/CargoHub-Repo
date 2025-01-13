@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = 'http://localhost:8000/api/v1'
+BASE_URL = 'http://localhost:80/api/v1'
 
 HEADER = {"API_KEY" : "a1b2c3d4e5"}
 # THE JSON FILES START OUT AS EMPTY

@@ -48,11 +48,15 @@ def get_object(model, pk, serializer_class):
 def delete_object(model, pk):
     try:
         obj = model.objects.get(pk=pk)
+        obj.delete()
+        return Response({'detail': 'Object deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
     except model.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    obj.delete()
-    return Response({"detail": "Object deleted"}, status=status.HTTP_204_NO_CONTENT)
+# def destroy(self, request, *args, **kwargs):
+#     instance = self.get_object()
+#     self.perform_destroy(instance)
+#     return Response(status=status.HTTP_204_NO_CONTENT)
 
 #end of generic methods
 ############################################################################################
@@ -66,7 +70,7 @@ def client_list(request):
     elif request.method == 'POST':
         return post_object(Clients, ClientSerializer, request.data)
 
-@api_view(['DELETE', 'PUT', 'GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def client_detail(request, pk):
     if request.method == 'DELETE':
         return delete_object(Clients, pk)
@@ -74,7 +78,7 @@ def client_detail(request, pk):
         return update_object(Clients, pk, ClientSerializer, request.data)
     elif request.method == 'GET':
         return get_object(Clients, pk, ClientSerializer)
-
+#
 @api_view(['GET', 'POST'])
 def warehouse_list(request):
     if request.method == 'GET':
