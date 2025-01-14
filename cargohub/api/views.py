@@ -4,8 +4,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories
-from .serializers import ClientSerializer, WarehousesSerializer, SuppliersSerializer, ShipmentsSerializer, OrdersSerializer, OrderItemSerializer, LocationsSerializer, ItemsSerializer, ItemLinesSerializer, ItemGroupsSerializer, ItemTypesSerializer, TransfersSerializer, InventoriesSerializer
+from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories, Pseudo_models
+from .serializers import ClientSerializer, WarehousesSerializer, SuppliersSerializer, ShipmentsSerializer, OrdersSerializer, OrderItemSerializer, LocationsSerializer, ItemsSerializer, ItemLinesSerializer, ItemGroupsSerializer, ItemTypesSerializer, TransfersSerializer, InventoriesSerializer, PseudoModelsSerializer
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.decorators import authentication_classes, permission_classes
 
 
 # Firstly you will see a few generic methods to handle HTTP requests. Later you will see the actual implementation per endpoint
@@ -63,6 +67,8 @@ def delete_object(model, pk):
 
 
 @api_view(['GET', 'POST'])
+# @authentication_classes([TokenAuthentication, SessionAuthentication])
+# @permission_classes([IsAuthenticated])
 def client_list(request):
     if request.method == 'GET':
         return get_objects(Clients, ClientSerializer)
@@ -71,6 +77,8 @@ def client_list(request):
         return post_object(Clients, ClientSerializer, request.data)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+# @authentication_classes([TokenAuthentication, SessionAuthentication])
+# @permission_classes([IsAuthenticated])
 def client_detail(request, pk):
     if request.method == 'DELETE':
         return delete_object(Clients, pk)
@@ -338,3 +346,25 @@ def transfer_commit(request, transfer_id):
             {"error": f"An error occurred: {str(e)}"},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def pseudo_models_list(request):
+    if request.method == 'GET':
+        return get_objects(Pseudo_models, PseudoModelsSerializer)
+    elif request.method == 'POST':
+        return post_object(Pseudo_models, PseudoModelsSerializer, request.data)
+
+@api_view(['DELETE', 'PUT', 'GET'])
+@authentication_classes([TokenAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def pseudo_models_detail(request, pk):
+    if request.method == 'DELETE':
+        return delete_object(Pseudo_models, pk)
+    elif request.method == 'PUT':
+        return update_object(Pseudo_models, pk, PseudoModelsSerializer, request.data)
+    elif request.method == 'GET':
+        return get_object(Pseudo_models, pk, PseudoModelsSerializer)

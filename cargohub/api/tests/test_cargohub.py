@@ -1,27 +1,48 @@
-from django.test import TransactionTestCase
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from api.models import *
 from datetime import datetime
 from django.utils.timezone import make_aware
+import uuid
 
 
-# class AuthIntegrationTests(TestCase):
-#     @classmethod
-#     # @authentication_classes([SessionAuthentication, BasicAuthentication])
-#     def setUpTestData(cls):
-#         cls.api_key = "a1b2c3d4e5"
-#         cls.headers = {"HTTP_AUTHORIZATION" : cls.api_key}
-        
-#     def test_auth(self):
-#         get_response = self.client.get('/api/clients/')
-#         self.assertEqual(get_response.headers['Content-Type'], 'application/json')
-#         self.assertEqual(get_response.status_code, 403)  # FAILED: RETURNS 200 BECAUSE AUTHORISATION NOT IMPLEMENTED YET
 
-#     def test_nonexistent_endpoint_get(self):
-#         response = self.client.get('/api/nonexistent-endpoint/', **self.headers)
-#         self.assertEqual(response.status_code, 404)
+class AuthIntegrationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Create a test user and token
+        cls.user = User.objects.create_user(
+            username="testuser",
+            password="testpassword",
+            email="testuser@example.com"
+        )
+
+        cls.token = Token.objects.create(user=cls.user)
+
+    def setUp(self):
+        self.client = APIClient()
+        assert isinstance(self.client, APIClient)   # NOTE: due to import issues
+        # Authenticate the client for each test
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+    def test_auth_required(self):
+        # Test without authentication
+        self.client.credentials()  # Remove authentication
+        response = self.client.get('/api/pseudo_models/')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_auth_with_valid_token(self):
+        # Test with valid token
+        response = self.client.get('/api/pseudo_models/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_nonexistent_endpoint(self):
+        # Test nonexistent endpoint with authentication
+        response = self.client.get('/api/nonexistent-endpoint/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class ClientsCRUDTest(TestCase):
@@ -60,9 +81,14 @@ class ClientsCRUDTest(TestCase):
             "name": "Updated Test Item",
             "address": "This is an updated test description."
         }
+        self.api_key = "a1b2c3d4e5"
+        self.headers = {"HTTP_AUTHORIZATION" : self.api_key}
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/clients', follow=True, format='json', **self.headers)
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.client.get(f'/api/clients/9998/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['name'], self.test_data[0]['name'])
@@ -71,26 +97,26 @@ class ClientsCRUDTest(TestCase):
     def test_crud_put_with_verification(self):
         # UPDATE
         with self.subTest("Update the client data"):
-            update_response = self.client.put(f'/api/clients/9998/', self.updated_data, format='json')
+            update_response = self.client.put(f'/api/clients/9998/', self.updated_data, format='json', **self.headers)
             self.assertEqual(update_response.status_code, status.HTTP_200_OK)
             self.assertEqual(update_response.data['name'], self.updated_data['name'])
             self.assertEqual(update_response.data['address'], self.updated_data['address'])
 
         # VERIFY
         with self.subTest("Verify the updated client data"):
-            verify_get_response = self.client.get(f'/api/clients/9998/', format='json')
+            verify_get_response = self.client.get(f'/api/clients/9998/', format='json', **self.headers)
             self.assertEqual(verify_get_response.data["address"], self.updated_data['address'])
 
 
     def test_crud_delete_with_verification(self):
         # DELETE
         with self.subTest("Delete the client data"):
-            delete_response = self.client.delete(f'/api/clients/9998/', format='json')
+            delete_response = self.client.delete(f'/api/clients/9998/', format='json', **self.headers)
             self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
 
         # VERIFY
         with self.subTest("Delete the data deletion"):
-            verify_delete_response = self.client.get(f'/api/clients/9998/', format='json')
+            verify_delete_response = self.client.get(f'/api/clients/9998/', format='json', **self.headers)
             self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
 
 
@@ -121,6 +147,9 @@ class InventoriesCRUDTest(TestCase):
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/inventories', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.inventory.get(f'/api/inventories/{self.test_inventory_data.id}/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['description'], self.test_inventory_data.description)
@@ -173,6 +202,9 @@ class Item_GroupsCRUDTest(TestCase):
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/item_groups', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.item_group.get(f'/api/item_groups/9998/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['description'], self.test_item_group_data.description)
@@ -225,6 +257,9 @@ class Item_linesCRUDTest(TestCase):
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/item_lines', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.item_line.get(f'/api/item_lines/9998/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['description'], self.test_item_line_data.description)
@@ -277,6 +312,9 @@ class Item_typesCRUDTest(TestCase):
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/item_types', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.item_type.get(f'/api/item_types/9998/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['description'], self.test_item_type_data.description)
@@ -313,10 +351,13 @@ class ItemsCRUDTest(TestCase):
     def setUp(self):
         # Initialize the test item
         self.item = APIClient()
+        # self.uuid = uuid.uuid4()
 
         # Set up initial test data
         self.test_item_data = Items.objects.create(
-            id=9998,
+            # id=str(self.uuid),
+            # id = "c303282d-f2e6-46ca-a04a-35d3d873712d",
+            id = 9998,      # NOTE: THE REASON AN INT IS USED HERE IS BECAUSE THE REQUEST AUTOMATICALLY TRANSLATES IT TO (U)UID
             code="testCode",
             description="Test Item",
             short_description = "test",
@@ -335,6 +376,7 @@ class ItemsCRUDTest(TestCase):
             created_at=make_aware(datetime.strptime("2012-12-04 10:44:27", "%Y-%m-%d %H:%M:%S")),
             updated_at=make_aware(datetime.strptime("2013-06-05 20:52:22", "%Y-%m-%d %H:%M:%S"))
         )
+        # self.item_id = self.test_item_data.id
 
         self.updated_data = {
             "description": "Updated Test Item"
@@ -343,7 +385,10 @@ class ItemsCRUDTest(TestCase):
 
     def test_crud_get(self):
         # READ
-        read_response = self.item.get(f'/api/items/9998/', format='json')
+        get_response = self.client.get('/api/items', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
+        read_response = self.item.get(f'/api/items/{self.test_item_data.id}/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['description'], self.test_item_data.description)
         self.assertNotEqual(read_response.data['updated_at'], self.test_item_data.updated_at)
@@ -351,14 +396,14 @@ class ItemsCRUDTest(TestCase):
     def test_crud_put_with_verification(self):
         # UPDATE
         with self.subTest("Update the item data"):
-            update_response = self.item.put(f'/api/items/9998/', self.updated_data, format='json')
+            update_response = self.item.put(f'/api/items/{self.test_item_data.id}/', self.updated_data, format='json')
             self.assertEqual(update_response.status_code, status.HTTP_200_OK)
             self.assertEqual(update_response.data['description'], self.updated_data['description'])
             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
 
         # VERIFY
         with self.subTest("Verify the updated item data"):
-            verify_get_response = self.item.get(f'/api/items/9998/', format='json')
+            verify_get_response = self.item.get(f'/api/items/{self.test_item_data.id}/', format='json')
             self.assertEqual(verify_get_response.data["description"], self.updated_data['description'])
             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
 
@@ -366,12 +411,12 @@ class ItemsCRUDTest(TestCase):
     def test_crud_delete_with_verification(self):
         # DELETE
         with self.subTest("Delete the item data"):
-            delete_response = self.item.delete(f'/api/items/9998/', format='json')
+            delete_response = self.item.delete(f'/api/items/{self.test_item_data.id}/', format='json')
             self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
 
         # VERIFY
         with self.subTest("Delete the data deletion"):
-            verify_delete_response = self.item.get(f'/api/items/9998/', format='json')
+            verify_delete_response = self.item.get(f'/api/items/{self.test_item_data.id}/', format='json')
             self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
 
 
@@ -397,6 +442,9 @@ class LocationsCRUDTest(TestCase):
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/locations', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.location.get(f'/api/locations/9998/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['name'], self.test_item_data.name)
@@ -465,6 +513,9 @@ class OrdersCRUDTest(TestCase):
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/orders', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.order.get(f'/api/orders/9998/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['notes'], self.test_item_data.notes)
@@ -530,6 +581,9 @@ class ShipmentsCRUDTest(TestCase):        # NOTE: Somehow selects `api_shipments
 
     def test_crud_get(self):
         # READ
+        get_response = self.client.get('/api/shipments', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
         read_response = self.shipment.get(f'/api/shipments/{self.test_item_data.id}/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['notes'], self.test_item_data.notes)
@@ -562,176 +616,185 @@ class ShipmentsCRUDTest(TestCase):        # NOTE: Somehow selects `api_shipments
             self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-# class SuppliersCRUDTest(TestCase):        # NOTE: Same issue as with `Shipments`
-#     def setUp(self):
-#         # Initialize the test item
-#         self.supplier = APIClient()
+class SuppliersCRUDTest(TestCase):        # NOTE: Same issue as with `Shipments`
+    def setUp(self):
+        # Initialize the test item
+        self.supplier = APIClient()
 
-#         # Set up initial test data
-#         self.test_item_data = Suppliers.objects.create(
-#             id=9998,
-#             code = "TEST9998",
-#             name = "Test",
-#             address = "333 Teststraat 3",
-#             address_extra = "T. 9998",
-#             city = "Test City",
-#             zip_code = "12451",
-#             province = "Testyland",
-#             country = "New Testia",
-#             contact_name = "Dexter T. Test",
-#             phonenumber = "06123456789",
-#             reference = "TEST-SUP9998",
-#             created_at=make_aware(datetime.strptime("2012-12-04 10:44:27", "%Y-%m-%d %H:%M:%S")),
-#             updated_at=make_aware(datetime.strptime("2014-06-05 20:52:22", "%Y-%m-%d %H:%M:%S"))
-#         )
+        # Set up initial test data
+        self.test_item_data = Suppliers.objects.create(
+            id=9998,
+            code = "TEST9998",
+            name = "Test",
+            address = "333 Teststraat 3",
+            address_extra = "T. 9998",
+            city = "Test City",
+            zip_code = "12451",
+            province = "Testyland",
+            country = "New Testia",
+            contact_name = "Dexter T. Test",
+            phonenumber = "06123456789",
+            reference = "TEST-SUP9998",
+            created_at=make_aware(datetime.strptime("2012-12-04 10:44:27", "%Y-%m-%d %H:%M:%S")),
+            updated_at=make_aware(datetime.strptime("2014-06-05 20:52:22", "%Y-%m-%d %H:%M:%S"))
+        )
 
-#         self.updated_data = {
-#             "name": "Updated Test Item"
-#         }
-#         self.old_updated_at = self.test_item_data.updated_at
+        self.updated_data = {
+            "name": "Updated Test Item"
+        }
+        self.old_updated_at = self.test_item_data.updated_at
 
-#     def test_crud_get(self):
-#         # READ
-#         read_response = self.supplier.get(f'/api/suppliers/9998/', format='json')
-#         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(read_response.data['name'], self.test_item_data.name)
-#         self.assertNotEqual(read_response.data['updated_at'], self.test_item_data.updated_at)
+    def test_crud_get(self):
+        # READ
+        get_response = self.client.get('/api/suppliers', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
 
-#     def test_crud_put_with_verification(self):
-#         # UPDATE
-#         with self.subTest("Update the item data"):
-#             update_response = self.supplier.put(f'/api/suppliers/9998/', self.updated_data, format='json')
-#             self.assertEqual(update_response.status_code, status.HTTP_200_OK)
-#             self.assertEqual(update_response.data['name'], self.updated_data['name'])
-#             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
+        read_response = self.supplier.get(f'/api/suppliers/9998/', format='json')
+        self.assertEqual(read_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(read_response.data['name'], self.test_item_data.name)
+        self.assertNotEqual(read_response.data['updated_at'], self.test_item_data.updated_at)
 
-#         # VERIFY
-#         with self.subTest("Verify the updated item data"):
-#             verify_get_response = self.supplier.get(f'/api/suppliers/9998/', format='json')
-#             self.assertEqual(verify_get_response.data["name"], self.updated_data['name'])
-#             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
+    def test_crud_put_with_verification(self):
+        # UPDATE
+        with self.subTest("Update the item data"):
+            update_response = self.supplier.put(f'/api/suppliers/9998/', self.updated_data, format='json')
+            self.assertEqual(update_response.status_code, status.HTTP_200_OK)
+            self.assertEqual(update_response.data['name'], self.updated_data['name'])
+            self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
 
-
-#     def test_crud_delete_with_verification(self):
-#         # DELETE
-#         with self.subTest("Delete the item data"):
-#             delete_response = self.supplier.delete(f'/api/suppliers/9998/', format='json')
-#             self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
-
-#         # VERIFY
-#         with self.subTest("Delete the data deletion"):
-#             verify_delete_response = self.supplier.get(f'/api/suppliers/9998/', format='json')
-#             self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
+        # VERIFY
+        with self.subTest("Verify the updated item data"):
+            verify_get_response = self.supplier.get(f'/api/suppliers/9998/', format='json')
+            self.assertEqual(verify_get_response.data["name"], self.updated_data['name'])
+            self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
 
 
-# class TransfersCRUDTest(TestCase):
-#     def setUp(self):
-#         # Initialize the test item
-#         self.transfer = APIClient()
+    def test_crud_delete_with_verification(self):
+        # DELETE
+        with self.subTest("Delete the item data"):
+            delete_response = self.supplier.delete(f'/api/suppliers/9998/', format='json')
+            self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
 
-#         # Set up initial test data
-#         self.test_item_data = Transfers.objects.create(
-#             id=9998,
-#             reference = "TR09998",
-#             transfer_from = None,
-#             transfer_to = 1234,
-#             transfer_status = "Testing",
-#             created_at=make_aware(datetime.strptime("2012-12-04 10:44:27", "%Y-%m-%d %H:%M:%S")),
-#             updated_at=make_aware(datetime.strptime("2014-06-05 20:52:22", "%Y-%m-%d %H:%M:%S"))
-#         )
-
-#         self.updated_data = {
-#             "transfer_status": "Updated Test Item"
-#         }
-#         self.old_updated_at = self.test_item_data.updated_at
-
-#     def test_crud_get(self):
-#         # READ
-#         read_response = self.transfer.get(f'/api/transfers/9998/', format='json')
-#         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(read_response.data['transfer_status'], self.test_item_data.transfer_status)
-#         self.assertNotEqual(read_response.data['updated_at'], self.test_item_data.updated_at)
-
-#     def test_crud_put_with_verification(self):
-#         # UPDATE
-#         with self.subTest("Update the item data"):
-#             update_response = self.transfer.put(f'/api/transfers/9998/', self.updated_data, format='json')
-#             self.assertEqual(update_response.status_code, status.HTTP_200_OK)
-#             self.assertEqual(update_response.data['transfer_status'], self.updated_data['transfer_status'])
-#             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
-
-#         # VERIFY
-#         with self.subTest("Verify the updated item data"):
-#             verify_get_response = self.transfer.get(f'/api/transfers/9998/', format='json')
-#             self.assertEqual(verify_get_response.data["transfer_status"], self.updated_data['transfer_status'])
-#             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
+        # VERIFY
+        with self.subTest("Delete the data deletion"):
+            verify_delete_response = self.supplier.get(f'/api/suppliers/9998/', format='json')
+            self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-#     def test_crud_delete_with_verification(self):
-#         # DELETE
-#         with self.subTest("Delete the item data"):
-#             delete_response = self.transfer.delete(f'/api/transfers/9998/', format='json')
-#             self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+class TransfersCRUDTest(TestCase):
+    def setUp(self):
+        # Initialize the test item
+        self.transfer = APIClient()
 
-#         # VERIFY
-#         with self.subTest("Delete the data deletion"):
-#             verify_delete_response = self.transfer.get(f'/api/transfers/9998/', format='json')
-#             self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
+        # Set up initial test data
+        self.test_item_data = Transfers.objects.create(
+            id=9998,
+            reference = "TR09998",
+            transfer_from = None,
+            transfer_to = 1234,
+            transfer_status = "Testing",
+            created_at=make_aware(datetime.strptime("2012-12-04 10:44:27", "%Y-%m-%d %H:%M:%S")),
+            updated_at=make_aware(datetime.strptime("2014-06-05 20:52:22", "%Y-%m-%d %H:%M:%S"))
+        )
 
+        self.updated_data = {
+            "transfer_status": "Updated Test Item"
+        }
+        self.old_updated_at = self.test_item_data.updated_at
 
-# class WarehousesCRUDTest(TestCase):
-#     def setUp(self):
-#         # Initialize the test item
-#         self.warehouse = APIClient()
+    def test_crud_get(self):
+        # READ
+        get_response = self.client.get('/api/transfers', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
 
-#         # Set up initial test data
-#         self.test_item_data = Warehouses.objects.create(
-#             id=9998,
-#             code = "TEST9998",
-#             name = "Test",
-#             address = "Testlaan 2",
-#             zip = "3485 TS",
-#             city = "Testendam",
-#             province = "Testland",
-#             country = "New Testia",
-#             created_at=make_aware(datetime.strptime("2012-12-04 10:44:27", "%Y-%m-%d %H:%M:%S")),
-#             updated_at=make_aware(datetime.strptime("2014-06-05 20:52:22", "%Y-%m-%d %H:%M:%S"))
-#         )
+        read_response = self.transfer.get(f'/api/transfers/9998/', format='json')
+        self.assertEqual(read_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(read_response.data['transfer_status'], self.test_item_data.transfer_status)
+        self.assertNotEqual(read_response.data['updated_at'], self.test_item_data.updated_at)
 
-#         self.updated_data = {
-#             "address": "Updated Test Item"
-#         }
-#         self.old_updated_at = self.test_item_data.updated_at
+    def test_crud_put_with_verification(self):
+        # UPDATE
+        with self.subTest("Update the item data"):
+            update_response = self.transfer.put(f'/api/transfers/9998/', self.updated_data, format='json')
+            self.assertEqual(update_response.status_code, status.HTTP_200_OK)
+            self.assertEqual(update_response.data['transfer_status'], self.updated_data['transfer_status'])
+            self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
 
-#     def test_crud_get(self):
-#         # READ
-#         read_response = self.warehouse.get(f'/api/warehouses/9998/', format='json')
-#         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(read_response.data['address'], self.test_item_data.address)
-#         self.assertNotEqual(read_response.data['updated_at'], self.test_item_data.updated_at)
-
-#     def test_crud_put_with_verification(self):
-#         # UPDATE
-#         with self.subTest("Update the item data"):
-#             update_response = self.warehouse.put(f'/api/warehouses/9998/', self.updated_data, format='json')
-#             self.assertEqual(update_response.status_code, status.HTTP_200_OK)
-#             self.assertEqual(update_response.data['address'], self.updated_data['address'])
-#             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
-
-#         # VERIFY
-#         with self.subTest("Verify the updated item data"):
-#             verify_get_response = self.warehouse.get(f'/api/warehouses/9998/', format='json')
-#             self.assertEqual(verify_get_response.data["address"], self.updated_data['address'])
-#             self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
+        # VERIFY
+        with self.subTest("Verify the updated item data"):
+            verify_get_response = self.transfer.get(f'/api/transfers/9998/', format='json')
+            self.assertEqual(verify_get_response.data["transfer_status"], self.updated_data['transfer_status'])
+            self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
 
 
-#     def test_crud_delete_with_verification(self):
-#         # DELETE
-#         with self.subTest("Delete the item data"):
-#             delete_response = self.warehouse.delete(f'/api/warehouses/9998/', format='json')
-#             self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+    def test_crud_delete_with_verification(self):
+        # DELETE
+        with self.subTest("Delete the item data"):
+            delete_response = self.transfer.delete(f'/api/transfers/9998/', format='json')
+            self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
 
-#         # VERIFY
-#         with self.subTest("Delete the data deletion"):
-#             verify_delete_response = self.warehouse.get(f'/api/warehouses/9998/', format='json')
-#             self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
+        # VERIFY
+        with self.subTest("Delete the data deletion"):
+            verify_delete_response = self.transfer.get(f'/api/transfers/9998/', format='json')
+            self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class WarehousesCRUDTest(TestCase):
+    def setUp(self):
+        # Initialize the test item
+        self.warehouse = APIClient()
+
+        # Set up initial test data
+        self.test_item_data = Warehouses.objects.create(
+            id=9998,
+            code = "TEST9998",
+            name = "Test",
+            address = "Testlaan 2",
+            zip = "3485 TS",
+            city = "Testendam",
+            province = "Testland",
+            country = "New Testia",
+            created_at=make_aware(datetime.strptime("2012-12-04 10:44:27", "%Y-%m-%d %H:%M:%S")),
+            updated_at=make_aware(datetime.strptime("2014-06-05 20:52:22", "%Y-%m-%d %H:%M:%S"))
+        )
+
+        self.updated_data = {
+            "address": "Updated Test Item"
+        }
+        self.old_updated_at = self.test_item_data.updated_at
+
+    def test_crud_get(self):
+        # READ
+        get_response = self.client.get('/api/warehouses', follow=True, format='json')
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)
+
+        read_response = self.warehouse.get(f'/api/warehouses/9998/', format='json')
+        self.assertEqual(read_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(read_response.data['address'], self.test_item_data.address)
+        self.assertNotEqual(read_response.data['updated_at'], self.test_item_data.updated_at)
+
+    def test_crud_put_with_verification(self):
+        # UPDATE
+        with self.subTest("Update the item data"):
+            update_response = self.warehouse.put(f'/api/warehouses/9998/', self.updated_data, format='json')
+            self.assertEqual(update_response.status_code, status.HTTP_200_OK)
+            self.assertEqual(update_response.data['address'], self.updated_data['address'])
+            self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
+
+        # VERIFY
+        with self.subTest("Verify the updated item data"):
+            verify_get_response = self.warehouse.get(f'/api/warehouses/9998/', format='json')
+            self.assertEqual(verify_get_response.data["address"], self.updated_data['address'])
+            self.assertNotEqual(update_response.data['updated_at'], self.old_updated_at)
+
+
+    def test_crud_delete_with_verification(self):
+        # DELETE
+        with self.subTest("Delete the item data"):
+            delete_response = self.warehouse.delete(f'/api/warehouses/9998/', format='json')
+            self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # VERIFY
+        with self.subTest("Delete the data deletion"):
+            verify_delete_response = self.warehouse.get(f'/api/warehouses/9998/', format='json')
+            self.assertEqual(verify_delete_response.status_code, status.HTTP_404_NOT_FOUND)

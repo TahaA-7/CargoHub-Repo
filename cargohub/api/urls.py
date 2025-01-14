@@ -17,6 +17,8 @@ urlpatterns = [
     path('locations/', views.location_list, name='location_list'),
     path('shipments/', views.shipment_list, name='shipment_list'),
 
+    path('pseudo_models/', views.pseudo_models_list, name='pseudo_models_list'),
+
     #PUT, DELETE and GET methods for individual resources (by primary key (pk)):
     path('clients/<int:pk>/', views.client_detail, name='client_detail'),
     path('orders/<int:pk>/', views.order_detail, name='order_detail'),
@@ -31,4 +33,6 @@ urlpatterns = [
     path('inventories/<int:pk>/', views.inventory_detail, name='inventory_detail'),
     path('locations/<int:pk>/', views.location_detail, name='location_detail'),
     path('shipments/<int:pk>/', views.shipment_detail, name='shipment_detail'),
+
+    path('pseudo_models/<int:pk>/', views.pseudo_models_detail, name='pseudo_models_detail'),
 ]

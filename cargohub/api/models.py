@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import uuid
 
 # Create your models here.
 # class Base(models.Model):
@@ -46,7 +47,7 @@ class Inventories(models.Model):
     item_id = models.CharField(max_length=255)
     description = models.TextField()
     item_reference = models.CharField(max_length=100)
-    locations = models.JSONField()
+    locations = models.JSONField()  # MIGHT cause problems...
     total_on_hand = models.IntegerField(default=0)
     total_expected = models.IntegerField(default=0)
     total_ordered = models.IntegerField(default=0)
@@ -58,6 +59,9 @@ class Inventories(models.Model):
     def __str__(self):
         return f"Item {self.item_id}: {self.description}"
 
+    class Meta:
+        db_table = 'api_inventories'
+
 
 # class Item(models.Model):
 #     item_id = models.AutoField(primary_key=True)
@@ -65,7 +69,7 @@ class Inventories(models.Model):
     
 
 class Items(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code = models.CharField(max_length=255)
     description = models.TextField()
     short_description = models.CharField(max_length=255)
@@ -128,7 +132,7 @@ class Item_groups(models.Model):
 
 class Warehouses(models.Model):
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=8)
+    code = models.CharField(max_length=20)
     name = models.CharField(max_length=255)
     address = models.TextField()
     zip = models.CharField(max_length=20)
@@ -147,7 +151,7 @@ class Warehouses(models.Model):
 
 
 class WarehouseContact(models.Model):
-    warehouse_contact = models.ForeignKey(Warehouses, related_name="items", on_delete=models.CASCADE)
+    warehouse_contact = models.ForeignKey(Warehouses, related_name="items", on_delete=models.CASCADE, default=None)
     contact_name = models.CharField(max_length=255)
     contact_phone = models.CharField(max_length=50)
     contact_email = models.EmailField()
@@ -187,7 +191,7 @@ class Shipments(models.Model):
     notes = models.TextField()
     carrier_code = models.CharField(max_length=20)
     carrier_description = models.TextField()
-    service_code = models.CharField(max_length=20)
+    service_code = models.CharField(max_length=20, default=None)
     payment_type = models.CharField(max_length=20)
     transfer_mode = models.CharField(max_length=20)
     total_package_count = models.IntegerField(default=0)
@@ -199,8 +203,12 @@ class Shipments(models.Model):
     def __str__(self):
         return self.id + " " + self.notes
 
+    class Meta:
+        db_table = 'api_shipments'
+
 
 class ShipmentItem(models.Model):
+    id = models.AutoField(primary_key=True)
     shipment_id = models.ForeignKey(Shipments, related_name="items", on_delete=models.CASCADE)
     item_id = models.CharField(max_length=255)
     amount = models.IntegerField(default=0)
@@ -221,6 +229,7 @@ class Transfers(models.Model):
 
 
 class TransferItem(models.Model):
+    id = models.AutoField(primary_key=True)
     transfer_item = models.ForeignKey(Transfers, related_name="items", on_delete=models.CASCADE)
     item_id = models.CharField(max_length=255)
     amount = models.IntegerField(default=0)
@@ -254,6 +263,7 @@ class Orders(models.Model):
 
 
 class OrderItem(models.Model):
+    id = models.AutoField(primary_key=True)
     order = models.ForeignKey(Orders, related_name="items", on_delete=models.CASCADE)
     item_id = models.CharField(max_length=50)
     amount = models.IntegerField()
@@ -265,10 +275,16 @@ class OrderItem(models.Model):
 class Locations(models.Model):
     id = models.AutoField(primary_key=True)
     warehouse_id = models.IntegerField()
-    code = models.CharField(max_length=5)
+    code = models.CharField(max_length=10)
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
+
+
+class Pseudo_models(models.Model):
+    id = models.AutoField(primary_key=True)
+    pseudonym = models.CharField(max_length=255)
+    pseudology = models.TextField()

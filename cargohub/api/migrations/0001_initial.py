@@ -259,4 +259,12 @@ class Migration(migrations.Migration):
                 ('warehouse', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contacts', to='api.warehouses')),
             ],
         ),
+        migrations.CreateModel(
+            name='Pseudo_models',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('pseudonym', models.CharField(max_length=255)),
+                ('pseudology', models.TextField()),
+            ],
+        )
     ]
