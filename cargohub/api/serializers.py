@@ -22,16 +22,14 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class WarehousesSerializer(serializers.ModelSerializer):
-    # code = serializers.CharField(max_length=8)
-    # name = serializers.CharField(max_length=255)
-    # address = serializers.CharField()
-    # zip = serializers.CharField(max_length=20)
-    # city = serializers.CharField(max_length=100)
-    # province = serializers.CharField(max_length=100)
-    # country = serializers.CharField(max_length=100)
-    # contact_name = serializers.CharField(max_length=255)
-    # contact_phone = serializers.CharField(max_length=50)
-    # contact_email = serializers.EmailField()
+    # id = models.AutoField(primary_key=True)
+    # code = models.CharField(max_length=20)
+    # name = models.CharField(max_length=255)
+    # address = models.TextField()
+    # zip = models.CharField(max_length=20)
+    # city = models.CharField(max_length=100)
+    # province = models.CharField(max_length=100)
+    # country = models.CharField(max_length=100)
     # created_at = serializers.DateTimeField()
     # updated_at = serializers.DateTimeField()
     class Meta:
@@ -41,12 +39,13 @@ class WarehousesSerializer(serializers.ModelSerializer):
 
 
 class SuppliersSerializer(serializers.ModelSerializer):
+    # id = models.AutoField(primary_key=True)
     # code = serializers.CharField(max_length=7)
     # name = serializers.CharField(max_length=255)
     # address = serializers.CharField()
     # address_extra = serializers.CharField()
     # city = serializers.CharField(max_length=100)
-    # zip = serializers.CharField(max_length=20)
+    # zip_code = serializers.CharField(max_length=20)
     # province = serializers.CharField(max_length=100)
     # country = serializers.CharField(max_length=100)
     # contact_name = serializers.CharField(max_length=255)
@@ -61,25 +60,30 @@ class SuppliersSerializer(serializers.ModelSerializer):
     
 
 class ShipmentsSerializer(serializers.ModelSerializer): 
-    # code = serializers.CharField(max_length=7)
-    # name = serializers.CharField(max_length=255)
-    # address = serializers.CharField()
-    # address_extra = serializers.CharField()
-    # city = serializers.CharField(max_length=100)
-    # zip = serializers.CharField(max_length=20)
-    # province = serializers.CharField(max_length=100)
-    # country = serializers.CharField(max_length=100)
-    # contact_name = serializers.CharField(max_length=255)
-    # phonenumber = serializers.CharField(max_length=50)
-    # reference = serializers.CharField(max_length=20)
-    # created_at = serializers.DateTimeField()
-    # updated_at = serializers.DateTimeField()
+    # id = models.AutoField(primary_key=True)
+    # order_id = models.IntegerField(default=0)
+    # source_id = models.IntegerField(default=0)  # ?
+    # order_date = models.DateField()
+    # request_date = models.DateField()
+    # shipment_date = models.DateField()
+    # shipment_type = models.CharField(max_length=20)
+    # notes = models.TextField()
+    # carrier_code = models.CharField(max_length=20)
+    # carrier_description = models.TextField()
+    # service_code = models.CharField(max_length=20, default=None)
+    # payment_type = models.CharField(max_length=20)
+    # transfer_mode = models.CharField(max_length=20)
+    # total_package_count = models.IntegerField(default=0)
+    # total_package_weight = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
+    # created_at = models.DateTimeField()
+    # updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         model = Shipments  # Replace `Client` with the actual model name
         fields = '__all__'  # Or specify the list of fields you want to include
 
 
 class TransfersSerializer(serializers.ModelSerializer):
+    # id = models.AutoField(primary_key=True)
     # reference = serializers.CharField(max_length=7, required=True)
     # transfer_from = serializers.CharField(max_length=255, required=True)
     # transfer_to = serializers.CharField(max_length=4, required=True)
@@ -129,6 +133,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class LocationsSerializer(serializers.ModelSerializer):
+    # id = models.AutoField(primary_key=True)
     # warehouse_id = serializers.IntegerField()
     # code = serializers.CharField(max_length=5)
     # name = serializers.CharField(max_length=255)
@@ -139,16 +144,31 @@ class LocationsSerializer(serializers.ModelSerializer):
         fields = '__all__'  # Or specify the list of fields you want to include
 
 class ItemsSerializer(serializers.ModelSerializer):
-    # name = serializers.CharField(max_length=255)
-    # description = serializers.CharField()
-    # created_at = serializers.DateTimeField()
-    # updated_at = serializers.DateTimeField()
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # code = models.CharField(max_length=255)
+    # description = models.TextField()
+    # short_description = models.CharField(max_length=255)
+    # upc_code = models.CharField(max_length=255)
+    # model_number = models.CharField(max_length=255)
+    # commodity_code = models.CharField(max_length=255)
+    # item_line = models.IntegerField(default=0)
+    # item_group = models.IntegerField(default=0)
+    # item_type = models.IntegerField(default=0)
+    # unit_purchase_quantity = models.IntegerField(default=0)
+    # unit_order_quantity = models.IntegerField(default=0)
+    # pack_order_quantity = models.IntegerField(default=0)
+    # supplier_id = models.IntegerField(default=0)
+    # supplier_code = models.CharField(max_length=255)
+    # supplier_part_number = models.CharField(max_length=255)
+    # created_at = models.DateTimeField()
+    # updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         model = Items  # Replace `Client` with the actual model name
         fields = '__all__'  # Or specify the list of fields you want to include
 
 
 class ItemLinesSerializer(serializers.ModelSerializer):
+    # id = models.AutoField(primary_key=True)
     # name = serializers.CharField(max_length=255)
     # description = serializers.CharField()
     # created_at = serializers.DateTimeField()
@@ -159,6 +179,7 @@ class ItemLinesSerializer(serializers.ModelSerializer):
 
 
 class ItemTypesSerializer(serializers.ModelSerializer):
+    # id = models.AutoField(primary_key=True)
     # name = serializers.CharField(max_length=255)
     # description = serializers.CharField()
     # created_at = serializers.DateTimeField()
@@ -171,6 +192,7 @@ class ItemTypesSerializer(serializers.ModelSerializer):
 
 
 class ItemGroupsSerializer(serializers.ModelSerializer):
+    # id = models.AutoField(primary_key=True)
     # name = serializers.CharField(max_length=255)
     # description = serializers.CharField()
     # created_at = serializers.DateTimeField()
@@ -180,17 +202,19 @@ class ItemGroupsSerializer(serializers.ModelSerializer):
         fields = '__all__'  # Or specify the list of fields you want to include
 
 class InventoriesSerializer(serializers.ModelSerializer):
-    # name = serializers.CharField(max_length=255)
-    # address = serializers.CharField()
-    # city = serializers.CharField(max_length=100)
-    # zip_code = serializers.CharField(max_length=20)
-    # province = serializers.CharField(max_length=100)
-    # country = serializers.CharField(max_length=100)
-    # contact_name = serializers.CharField(max_length=255)
-    # contact_phone = serializers.CharField(max_length=50)
-    # contact_email = serializers.EmailField()
-    # created_at = serializers.DateTimeField()
-    # updated_at = serializers.DateTimeField()
+    # id = models.AutoField(primary_key=True)
+    # item_id = models.CharField(max_length=255)
+    # description = models.TextField()
+    # item_reference = models.CharField(max_length=100)
+    # locations = models.JSONField()  # MIGHT cause problems...
+    # total_on_hand = models.IntegerField(default=0)
+    # total_expected = models.IntegerField(default=0)
+    # total_ordered = models.IntegerField(default=0)
+    # total_allocated = models.IntegerField(default=0)
+    # total_available = models.IntegerField(default=0)
+    # created_at = models.DateTimeField()
+    # updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         model = Inventories  # Replace `Client` with the actual model name
         fields = '__all__'  # Or specify the list of fields you want to include

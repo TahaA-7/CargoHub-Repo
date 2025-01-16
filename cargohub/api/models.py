@@ -69,7 +69,7 @@ class Inventories(models.Model):
     
 
 class Items(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code = models.CharField(max_length=255)
     description = models.TextField()
     short_description = models.CharField(max_length=255)
@@ -218,7 +218,7 @@ class Transfers(models.Model):
     id = models.AutoField(primary_key=True)
     reference = models.CharField(max_length=255)
     transfer_from = models.CharField(max_length=255, null=True)
-    transfer_to = models.CharField(max_length=4, null=True)
+    transfer_to = models.CharField(max_length=6, null=True)
     transfer_status = models.CharField(max_length=255)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField(auto_now=True)
