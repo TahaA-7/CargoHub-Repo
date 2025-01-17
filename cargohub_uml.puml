@@ -1,106 +1,53 @@
-@startuml
+@startuml CargoHubUseCaseStructureUML
 
-'Classes:
-'-------------
+skinparam usecase {
+BackgroundColor DarkSeaGreen
+BorderColor DarkSlateGray
 
-class Clients {
-    + Client
-    ---
-    + client info
-    + contact info
+BackgroundColor<< Main >> YellowGreen
+BorderColor<< Main >> YellowGreen
+
+ArrowColor Blue
+ActorBorderColor black
+ActorFontName Courier
+
+ActorBackgroundColor<< Human >> White
 }
 
-class Inventories {
-    + Inventory
-    ---
-    + item details info
-    + locations collection
-    + item inventory info
+package orderCase {
+    :Client(customer, business agent): --> (Order) : places
+    (Order) --> (Item) : contains
+    (Item) --> (Warehouse) : stored in
+    (Warehouse) --> (Inventory) : manages
+    (Inventory) --> (Location) : located at
+    (Item) --> (Item_line)  : belongs to
+    (Item) --> (Item_group) : categorised as
+    (Item) --> (Item_type) : type of
+    (Item) --> (Supplier) : sourced from
 }
 
-class Items {
-    + Item
-    ---
-    + item details info
-    + item line, item group, item type
-    + purchase and order info
-    + supplier info
+skinparam usecase {
+BackgroundColor DarkSeaGreen
+BorderColor DarkSlateGray
+
+BackgroundColor<< Main >> YellowGreen
+BorderColor<< Main >> YellowGreen
+
+ArrowColor Red
+ActorBorderColor black
+ActorFontName Courier
+
+ActorBackgroundColor<< Human >> White
 }
 
-class Item_lines {
-    + Item_line
-    ---
-    + name & description
+package shipmentCase {
+    :API: --> (System) : interacts with
+    (System) --> (Shipment)
+    (Shipment) --> (Order) : fulfills
+    (Shipment) --> (Transfer) : involves
+    (Transfer) --> (Warehouse) : moves between
+    (Transfer) --> (Location) : involves
+    (Order) --> :Client(customer, business agent): : arrives at
 }
-
-class Item_types {
-    + Item_type
-    ---
-    + name & description
-}
-
-class Item_groups {
-    + Item_group
-    ---
-    + name & description
-}
-
-class Warehouses {
-    + Warehouse
-    ---
-    + warehouse info
-    + contact info
-}
-
-class Suppliers {
-    + Supplier
-    ---
-    + supplier info
-}
-
-class Shipments {
-    + Shipment
-    ---
-    + shipment, source & carrier info
-    + package count and weight
-    ---
-    + items collection
-}
-
-class Transfers {
-    + Transfer
-    ---
-    + transfer info
-    + reference: uid
-    ---
-    + items collection 
-}
-
-class Orders {
-    + Order
-    ---
-    + order, source, warehouse & shipping info
-    + pricing totality info
-    ---
-    + items collection
-}
-
-class Locations {
-    + Location
-    ---
-    + warehouse & location info
-}
-
-'Associations:
-'-------------
-
-Items -> Item_groups
-Items -> Item_lines
-Items -> Item_types
-Orders -- Items
-Transfers -- Items
-Shipments -- Items
-Inventories -- Locations
-Locations -- Warehouses
 
 @enduml
