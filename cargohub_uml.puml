@@ -1,0 +1,53 @@
+@startuml CargoHubUseCaseStructureUML
+
+skinparam usecase {
+BackgroundColor DarkSeaGreen
+BorderColor DarkSlateGray
+
+BackgroundColor<< Main >> YellowGreen
+BorderColor<< Main >> YellowGreen
+
+ArrowColor Blue
+ActorBorderColor black
+ActorFontName Courier
+
+ActorBackgroundColor<< Human >> White
+}
+
+package orderCase {
+    :Client(customer, business agent): --> (Order) : places
+    (Order) --> (Item) : contains
+    (Item) --> (Warehouse) : stored in
+    (Warehouse) --> (Inventory) : manages
+    (Inventory) --> (Location) : located at
+    (Item) --> (Item_line)  : belongs to
+    (Item) --> (Item_group) : categorised as
+    (Item) --> (Item_type) : type of
+    (Item) --> (Supplier) : sourced from
+}
+
+skinparam usecase {
+BackgroundColor DarkSeaGreen
+BorderColor DarkSlateGray
+
+BackgroundColor<< Main >> YellowGreen
+BorderColor<< Main >> YellowGreen
+
+ArrowColor Red
+ActorBorderColor black
+ActorFontName Courier
+
+ActorBackgroundColor<< Human >> White
+}
+
+package shipmentCase {
+    :API: --> (System) : interacts with
+    (System) --> (Shipment)
+    (Shipment) --> (Order) : fulfills
+    (Shipment) --> (Transfer) : involves
+    (Transfer) --> (Warehouse) : moves between
+    (Transfer) --> (Location) : involves
+    (Order) --> :Client(customer, business agent): : arrives at
+}
+
+@enduml

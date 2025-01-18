@@ -1,11 +1,15 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view, permission_classes
+#from django.shortcuts import render
+from rest_framework.decorators import api_view#, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories
-from .serializers import ClientSerializer, WarehousesSerializer, SuppliersSerializer, ShipmentsSerializer, OrdersSerializer, OrderItemSerializer, LocationsSerializer, ItemsSerializer, ItemLinesSerializer, ItemGroupsSerializer, ItemTypesSerializer, TransfersSerializer, InventoriesSerializer
+from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories, Pseudo_models
+from .serializers import ClientSerializer, WarehousesSerializer, SuppliersSerializer, ShipmentsSerializer, OrdersSerializer, OrderItemSerializer, LocationsSerializer, ItemsSerializer, ItemLinesSerializer, ItemGroupsSerializer, ItemTypesSerializer, TransfersSerializer, InventoriesSerializer, PseudoModelsSerializer
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.decorators import authentication_classes, permission_classes
 
 
 # Firstly you will see a few generic methods to handle HTTP requests. Later you will see the actual implementation per endpoint
@@ -13,12 +17,15 @@ def update_object(model, pk, serializer_class, data):
     try:
         obj = model.objects.get(pk=pk)
     except model.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = serializer_class(obj, data=data)
+    serializer = serializer_class(obj, data=data, partial=True)
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+        try:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": f"Update failed: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def post_object(model, serializer_class, data):    
@@ -45,33 +52,41 @@ def get_object(model, pk, serializer_class):
 def delete_object(model, pk):
     try:
         obj = model.objects.get(pk=pk)
+        obj.delete()
+        return Response({'detail': 'Object deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
     except model.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    obj.delete()
-    return Response({"detail": "Object deleted"}, status=status.HTTP_204_NO_CONTENT)
+# def destroy(self, request, *args, **kwargs):
+#     instance = self.get_object()
+#     self.perform_destroy(instance)
+#     return Response(status=status.HTTP_204_NO_CONTENT)
 
 #end of generic methods
 ############################################################################################
 
 
 @api_view(['GET', 'POST'])
+# @authentication_classes([TokenAuthentication, SessionAuthentication])
+# @permission_classes([IsAuthenticated])
 def client_list(request):
     if request.method == 'GET':
         return get_objects(Clients, ClientSerializer)
 
     elif request.method == 'POST':
-        post_object(Clients, ClientSerializer, request.data)
+        return post_object(Clients, ClientSerializer, request.data)
 
-@api_view(['DELETE', 'PUT', 'GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
+# @authentication_classes([TokenAuthentication, SessionAuthentication])
+# @permission_classes([IsAuthenticated])
 def client_detail(request, pk):
     if request.method == 'DELETE':
         return delete_object(Clients, pk)
-    elif request.methot == 'PUT':
+    elif request.method == 'PUT':
         return update_object(Clients, pk, ClientSerializer, request.data)
     elif request.method == 'GET':
         return get_object(Clients, pk, ClientSerializer)
-
+#
 @api_view(['GET', 'POST'])
 def warehouse_list(request):
     if request.method == 'GET':
@@ -331,3 +346,25 @@ def transfer_commit(request, transfer_id):
             {"error": f"An error occurred: {str(e)}"},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def pseudo_models_list(request):
+    if request.method == 'GET':
+        return get_objects(Pseudo_models, PseudoModelsSerializer)
+    elif request.method == 'POST':
+        return post_object(Pseudo_models, PseudoModelsSerializer, request.data)
+
+@api_view(['DELETE', 'PUT', 'GET'])
+@authentication_classes([TokenAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def pseudo_models_detail(request, pk):
+    if request.method == 'DELETE':
+        return delete_object(Pseudo_models, pk)
+    elif request.method == 'PUT':
+        return update_object(Pseudo_models, pk, PseudoModelsSerializer, request.data)
+    elif request.method == 'GET':
+        return get_object(Pseudo_models, pk, PseudoModelsSerializer)

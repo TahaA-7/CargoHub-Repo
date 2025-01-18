@@ -440,6 +440,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             data_provider.fetch_item_pool().save()
             self.send_response(201)
             self.end_headers()
+        # elif path[0] == "item_types:"
+        # elif path[0] == "item_lines:"
+        # elif path[0] == "item_groups:"
         elif path[0] == "inventories":
             content_length = int(self.headers["Content-Length"])
             post_data = self.rfile.read(content_length)
