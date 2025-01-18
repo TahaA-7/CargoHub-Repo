@@ -1,11 +1,15 @@
 from django.shortcuts import render
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from .models import Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories
+from .models import ApiKey, Clients, Warehouses, Suppliers, Shipments, Orders, Locations, Items, Item_types, Item_groups, Item_lines, Transfers, Inventories
 from .serializers import ClientSerializer, WarehousesSerializer, SuppliersSerializer, ShipmentsSerializer, OrdersSerializer, OrderItemSerializer, LocationsSerializer, ItemsSerializer, ItemLinesSerializer, ItemGroupsSerializer, ItemTypesSerializer, TransfersSerializer, InventoriesSerializer
+from .utils import generate_api_key
+from .api_key_middleware import validate_api_key
+from django.http import JsonResponse
 
 
 # Firstly you will see a few generic methods to handle HTTP requests. Later you will see the actual implementation per endpoint
@@ -20,6 +24,9 @@ def update_object(model, pk, serializer_class, data):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def test_view(request):
+    return JsonResponse({"status": "working"})
 
 def post_object(model, serializer_class, data):    
     serializer = serializer_class(data=data)
@@ -54,7 +61,7 @@ def delete_object(model, pk):
 #end of generic methods
 ############################################################################################
 
-
+@validate_api_key
 @api_view(['GET', 'POST'])
 def client_list(request):
     if request.method == 'GET':
@@ -63,6 +70,7 @@ def client_list(request):
     elif request.method == 'POST':
         post_object(Clients, ClientSerializer, request.data)
 
+@validate_api_key
 @api_view(['DELETE', 'PUT', 'GET'])
 def client_detail(request, pk):
     if request.method == 'DELETE':
@@ -72,6 +80,8 @@ def client_detail(request, pk):
     elif request.method == 'GET':
         return get_object(Clients, pk, ClientSerializer)
 
+
+@validate_api_key
 @api_view(['GET', 'POST'])
 def warehouse_list(request):
     if request.method == 'GET':
@@ -79,6 +89,7 @@ def warehouse_list(request):
     elif request.method == 'POST':
         return post_object(Warehouses, WarehousesSerializer, request.data)
 
+@validate_api_key
 @api_view(['DELETE', 'PUT', 'GET'])
 def warehouse_detail(request, pk):
     if request.method == 'DELETE':
@@ -331,3 +342,33 @@ def transfer_commit(request, transfer_id):
             {"error": f"An error occurred: {str(e)}"},
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+
+class CreateApiKeyView(APIView):
+
+    def get(self, request):
+        return Response({"message": "Endpoint is reachable"}, status=200)
+    
+    def post_api_key(self, request):
+        print(f"Request data: {request.data}")
+        client_id = request.data.get('client_id')
+        warehouse_id = request.data.get('warehouse_id')
+        client = Clients.objects.filter(id=client_id).first()
+        if not client:
+            return Response({"error": "Client not found"}, status=400)
+        
+        warehouses = Warehouses.objects.filter(id__in=warehouse_id)
+        if not warehouses.exists():
+            return Response({"error": "No valid warehouses found"}, status=400)
+
+        # Generate and save API key
+        api_key = ApiKey.objects.create(
+            key=generate_api_key(),
+            client=client,
+        )
+        api_key.warehouses.set(warehouses)
+        api_key.save()
+
+        return Response({"api_key": api_key.key}, status=201)
+
+

@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views  # Import views from the same directory
+from .views import CreateApiKeyView
+from . import utils
 
 urlpatterns = [
 
@@ -31,4 +33,9 @@ urlpatterns = [
     path('inventories/<int:pk>/', views.inventory_detail, name='inventory_detail'),
     path('locations/<int:pk>/', views.location_detail, name='location_detail'),
     path('shipments/<int:pk>/', views.shipment_detail, name='shipment_detail'),
+
+
+        #create api key:
+    path('create-api-key/', CreateApiKeyView.as_view(), name='create-api-key'),
+    path('generate_api_key/', utils.generate_api_key, name='generate_api_key')
 ]

@@ -199,3 +199,10 @@ class Locations(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ApiKey(models.Model):
+    key = models.CharField(max_length=100, unique=True)
+    is_active = models.BooleanField(default=True)
+    client = models.ForeignKey('Clients', on_delete=models.CASCADE)
+    warehouses = models.ManyToManyField('Warehouses')
