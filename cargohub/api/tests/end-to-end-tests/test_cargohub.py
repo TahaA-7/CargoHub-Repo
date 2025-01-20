@@ -204,7 +204,7 @@ class Item_GroupsCRUDTest(TestCase):
         # READ
         get_response = self.client.get('/api/item_groups', follow=True, format='json')
         self.assertEqual(get_response.status_code, status.HTTP_200_OK)
-
+        # print(get_response.data)
         read_response = self.item_group.get(f'/api/item_groups/9998/', format='json')
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
         self.assertEqual(read_response.data['description'], self.test_item_group_data.description)

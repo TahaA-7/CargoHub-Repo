@@ -24,9 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 
 SECRET_KEY = os.getenv('DEPLOY_SSH_KEY')
+# SECRET_KEY = 'django-insecure-aeothm-c1sbqu8i_@47@ydlsenn@xm%me@opdibl^$_l6_k+ps'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+# DEBUG = True
+
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
