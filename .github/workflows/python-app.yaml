@@ -53,10 +53,16 @@ jobs:
           sudo apt-get update || exit 1
           sudo apt-get install -y python3-venv || exit 1
 
+      # - name: Set environment variables for production
+      #   run: |
+      #     echo "DEBUG=False" >> $GITHUB_ENV
+      #     echo "SECRET_KEY=${{ secrets.DEPLOY_SSH_KEY }}" >> $GITHUB_ENV
       - name: Set environment variables for production
         run: |
-          echo "DEBUG=False" >> $GITHUB_ENV
-          echo "SECRET_KEY=${{ secrets.DEPLOY_SSH_KEY }}" >> $GITHUB_ENV
+          echo "Running with production settings"
+        env:
+          DEBUG: false
+          SECRET_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: Deploy Django Application
         run: |
