@@ -368,3 +368,10 @@ def pseudo_models_detail(request, pk):
         return update_object(Pseudo_models, pk, PseudoModelsSerializer, request.data)
     elif request.method == 'GET':
         return get_object(Pseudo_models, pk, PseudoModelsSerializer)
+
+
+@api_view(['GET'])
+def hello_world(request):
+    if request.method == 'GET':
+        return Response({"message": "Hello, world!"}, status=status.HTTP_200_OK)
+    
