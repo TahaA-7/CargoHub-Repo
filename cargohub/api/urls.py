@@ -36,6 +36,5 @@ urlpatterns = [
 
     path('helloworld', views.hello_world, name='hello_world'),
 
-
     path('pseudo_models/<int:pk>/', views.pseudo_models_detail, name='pseudo_models_detail'),
 ]

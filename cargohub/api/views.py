@@ -374,4 +374,3 @@ def pseudo_models_detail(request, pk):
 def hello_world(request):
     if request.method == 'GET':
         return Response({"message": "Hello, world!"}, status=status.HTTP_200_OK)
-    
