@@ -30,7 +30,6 @@ jobs:
       #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest and coverage
         run: |
-          pip install mysqlclient
           python cargohub/manage.py test api.tests.end-to-end-tests.test_cargohub
       # pytest
       # pytest --cov --cov-report term --cov-report xml:coverage.xml
