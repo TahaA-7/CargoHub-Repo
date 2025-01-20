@@ -90,4 +90,4 @@ jobs:
           python manage.py collectstatic --noinput || exit 1
 
           # Start Gunicorn server
-          gunicorn cargohub.wsgi:application --bind 0.0.0.0:8000 --daemon || exit 1
+          gunicorn cargohub.wsgi:application --bind 0.0.0.0:80 --daemon || exit 1
