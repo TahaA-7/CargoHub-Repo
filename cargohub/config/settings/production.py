@@ -13,7 +13,7 @@ LOGGING = {
         'file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': '/path/to/your/django_error.log',
+            'filename': '/cargohub/errors/error.log',
         },
     },
     'loggers': {
