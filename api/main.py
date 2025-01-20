@@ -385,7 +385,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         api_key = self.headers.get("API_KEY")
         user = auth_provider.get_user(api_key)
     
-        if self.path == "/api/v1":
+        if self.path == "/api/v1/yo/yo":
             self.send_response(200)
             self.end_headers()
             return
