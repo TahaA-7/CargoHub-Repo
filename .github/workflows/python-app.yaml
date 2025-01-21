@@ -82,8 +82,7 @@ jobs:
           pip install -r requirements.txt || exit 1
 
           export PYTHONPATH=~/CargoHub/CargoHub-Repo/cargohub
-          export DJANGO_SETTINGS_MODULE=config.settings.production
-          echo "SECRET_KEY=django-insecure-aeothm-c1sbqu8i_@47@ydlsenn@xm%me@opdibl^$_l6_k+ps" >> $GITHUB_ENV
+          export DJANGO_SETTINGS_MODULE=config.settings.development
 
           # Run migrations and collectstatic
           python manage.py migrate --noinput || exit 1
