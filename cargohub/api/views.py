@@ -370,7 +370,7 @@ def pseudo_models_detail(request, pk):
         return get_object(Pseudo_models, pk, PseudoModelsSerializer)
 
 
-# @api_view(['GET'])
-# def hello_world(request):
-#     if request.method == 'GET':
-#         return Response({"message": "Hello, world!"}, status=status.HTTP_200_OK)
+@api_view(['GET'])
+def hello_world(request):
+    if request.method == 'GET':
+        return Response({"message": "Hello, world!"}, status=status.HTTP_200_OK)
