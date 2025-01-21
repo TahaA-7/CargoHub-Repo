@@ -83,10 +83,11 @@ jobs:
 
           export PYTHONPATH=~/CargoHub/CargoHub-Repo/cargohub
           export DJANGO_SETTINGS_MODULE=config.settings.production
+          echo "SECRET_KEY=django-insecure-aeothm-c1sbqu8i_@47@ydlsenn@xm%me@opdibl^$_l6_k+ps" >> $GITHUB_ENV
 
           # Run migrations and collectstatic
           python manage.py migrate --noinput || exit 1
           python manage.py collectstatic --noinput || exit 1
 
           # Start Gunicorn server
-          gunicorn config.wsgi:application --bind 0.0.0.0:8000 --access-logfile - --error-logfile - --worker-class sync
+          gunicorn config.wsgi:application --bind 0.0.0.0:8000 --daemon 
