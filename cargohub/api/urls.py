@@ -34,7 +34,7 @@ urlpatterns = [
     path('locations/<int:pk>/', views.location_detail, name='location_detail'),
     path('shipments/<int:pk>/', views.shipment_detail, name='shipment_detail'),
 
-    path('helloworld', views.hello_world, name='hello_world'),
+    # path('helloworld', views.hello_world, name='hello_world'),
 
     path('pseudo_models/<int:pk>/', views.pseudo_models_detail, name='pseudo_models_detail'),
 ]
