@@ -8,6 +8,8 @@ from datetime import datetime
 from django.utils.timezone import make_aware
 import uuid
 
+from api.models.clients import *
+
 # NOTES: cd to `cargohub` and run with `python manage.py test api.tests.end-to-end-tests.test_unit_test_views`
 
 class AuthIntegrationTests(TestCase):
