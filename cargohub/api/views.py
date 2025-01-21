@@ -349,18 +349,18 @@ class CreateApiKeyView(APIView):
     def get(self, request):
         return Response({"message": "Endpoint is reachable"}, status=200)
     
-    def post_api_key(self, request):
+    def post(self, request):
         print(f"Request data: {request.data}")
         client_id = request.data.get('client_id')
         warehouse_id = request.data.get('warehouse_id')
+
         client = Clients.objects.filter(id=client_id).first()
         if not client:
-            return Response({"error": "Client not found"}, status=400)
+            return Response({"error": "Client not found"}, status=status.HTTP_400_BAD_REQUEST)
         
         warehouses = Warehouses.objects.filter(id__in=warehouse_id)
         if not warehouses.exists():
-            return Response({"error": "No valid warehouses found"}, status=400)
-
+            return Response({"error": "No valid warehouses found"}, status=status.HTTP_400_BAD_REQUEST)
         # Generate and save API key
         api_key = ApiKey.objects.create(
             key=generate_api_key(),
@@ -369,6 +369,6 @@ class CreateApiKeyView(APIView):
         api_key.warehouses.set(warehouses)
         api_key.save()
 
-        return Response({"api_key": api_key.key}, status=201)
+        return Response({"api_key": api_key.key}, status=status.HTTP_201_CREATED)
 
 
