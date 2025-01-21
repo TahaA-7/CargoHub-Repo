@@ -89,4 +89,4 @@ jobs:
           python manage.py collectstatic --noinput || exit 1
 
           # Start Gunicorn server
-          gunicorn config.wsgi:application --bind 0.0.0.0:8000 
+          nohup gunicorn config.wsgi:application --bind 0.0.0.0:8000 > gunicorn.log 2>&1 &
