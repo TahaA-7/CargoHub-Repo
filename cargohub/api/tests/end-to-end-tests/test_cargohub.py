@@ -14,9 +14,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 from api.models import Clients, Inventories, Warehouses, Item_groups, Item_lines, Item_types, Items, Locations, Orders, Shipments, Suppliers, Transfers
 
-
-
-
 # NOTES: cd to `cargohub` and run with `python manage.py test api.tests.end-to-end-tests.test_unit_test_views`
 
 class AuthIntegrationTests(TestCase):
