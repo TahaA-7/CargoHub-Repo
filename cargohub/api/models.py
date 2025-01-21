@@ -31,7 +31,7 @@ class Clients(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'clients'
+        db_table = 'api_clients'
 
 
 # class ClientContact(models.Model):
@@ -62,7 +62,7 @@ class Inventories(models.Model):
         return f"Item {self.item_id}: {self.description}"
 
     class Meta:
-        db_table = 'inventories'
+        db_table = 'api_inventories'
 
 
 # class Item(models.Model):
@@ -94,7 +94,7 @@ class Items(models.Model):
         return self.id + "   " + self.code
     
     class Meta:
-        db_table = 'items'
+        db_table = 'api_items'
 
 
 class Item_lines(models.Model):
@@ -107,7 +107,7 @@ class Item_lines(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'item_lines'
+        db_table = 'api_item_lines'
 
 class Item_types(models.Model):
     id = models.AutoField(primary_key=True)
@@ -135,7 +135,7 @@ class Item_groups(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'item_groups'
+        db_table = 'api_item_groups'
 
 class Warehouses(models.Model):
     id = models.AutoField(primary_key=True)
@@ -156,7 +156,7 @@ class Warehouses(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'warehouses'
+        db_table = 'api_warehouses'
 
 class WarehouseContact(models.Model):
     warehouse_contact = models.ForeignKey(Warehouses, related_name="items", on_delete=models.CASCADE, default=None)
@@ -187,7 +187,7 @@ class Suppliers(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'suppliers'
+        db_table = 'api_suppliers'
 
 class Shipments(models.Model): 
     id = models.AutoField(primary_key=True)
@@ -213,7 +213,7 @@ class Shipments(models.Model):
         return self.id + " " + self.notes
 
     class Meta:
-        db_table = 'shipments'
+        db_table = 'api_shipments'
 
 
 class ShipmentItem(models.Model):
@@ -222,7 +222,7 @@ class ShipmentItem(models.Model):
     item_id = models.CharField(max_length=255)
     amount = models.IntegerField(default=0)
     class Meta:
-        db_table = 'shipment_items'
+        db_table = 'api_shipment_items'
 
 class Transfers(models.Model):
     id = models.AutoField(primary_key=True)
@@ -237,7 +237,7 @@ class Transfers(models.Model):
     def __str__(self):
         return self.reference
     class Meta:
-        db_table = 'transfers'
+        db_table = 'api_transfers'
 
 
 class TransferItem(models.Model):
@@ -246,7 +246,7 @@ class TransferItem(models.Model):
     item_id = models.CharField(max_length=255)
     amount = models.IntegerField(default=0)
     class Meta:
-        db_table = 'transfer_items'
+        db_table = 'api_transfer_items'
 
 class Orders(models.Model):
     id = models.AutoField(primary_key=True)
@@ -274,7 +274,7 @@ class Orders(models.Model):
     def __str__(self):
         return f"Order {self.reference} - {self.order_status}"
     class Meta:
-        db_table = 'orders'
+        db_table = 'api_orders'
 
 class OrderItem(models.Model):
     id = models.AutoField(primary_key=True)
@@ -285,7 +285,7 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"Item {self.item_id} (Amount: {self.amount})"
     class Meta:
-        db_table = 'order_items'
+        db_table = 'api_order_items'
 
 class Locations(models.Model):
     id = models.AutoField(primary_key=True)
@@ -298,7 +298,7 @@ class Locations(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'locations'
+        db_table = 'api_locations'
 
 class Pseudo_models(models.Model):
     id = models.AutoField(primary_key=True)

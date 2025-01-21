@@ -3,12 +3,19 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from api.models import *
 from datetime import datetime
 from django.utils.timezone import make_aware
+import sys
+import os
 import uuid
+from django.core.management import call_command
 
-from api.models.clients import *
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+
+from api.models import Clients, Inventories, Warehouses, Item_groups, Item_lines, Item_types, Items, Locations, Orders, Shipments, Suppliers, Transfers
+
+
+
 
 # NOTES: cd to `cargohub` and run with `python manage.py test api.tests.end-to-end-tests.test_unit_test_views`
 
@@ -25,6 +32,7 @@ class AuthIntegrationTests(TestCase):
         cls.token = Token.objects.create(user=cls.user)
 
     def setUp(self):
+
         self.client = APIClient()
         assert isinstance(self.client, APIClient)   # NOTE: due to import issues
         # Authenticate the client for each test
@@ -49,6 +57,7 @@ class AuthIntegrationTests(TestCase):
 
 class ClientsCRUDTest(TestCase):
     def setUp(self):
+
         # Initialize the test client
         self.client = APIClient()
 
