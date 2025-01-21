@@ -30,6 +30,8 @@ class Clients(models.Model):
 
     def __str__(self):
         return self.name
+    class Meta:
+        db_table = 'clients'
 
 
 # class ClientContact(models.Model):
@@ -60,7 +62,7 @@ class Inventories(models.Model):
         return f"Item {self.item_id}: {self.description}"
 
     class Meta:
-        db_table = 'api_inventories'
+        db_table = 'inventories'
 
 
 # class Item(models.Model):
@@ -90,6 +92,9 @@ class Items(models.Model):
 
     def __str__(self):
         return self.id + "   " + self.code
+    
+    class Meta:
+        db_table = 'items'
 
 
 class Item_lines(models.Model):
@@ -101,7 +106,8 @@ class Item_lines(models.Model):
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        db_table = 'item_lines'
 
 class Item_types(models.Model):
     id = models.AutoField(primary_key=True)
@@ -128,7 +134,8 @@ class Item_groups(models.Model):
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        db_table = 'item_groups'
 
 class Warehouses(models.Model):
     id = models.AutoField(primary_key=True)
@@ -148,7 +155,8 @@ class Warehouses(models.Model):
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        db_table = 'warehouses'
 
 class WarehouseContact(models.Model):
     warehouse_contact = models.ForeignKey(Warehouses, related_name="items", on_delete=models.CASCADE, default=None)
@@ -158,7 +166,7 @@ class WarehouseContact(models.Model):
 
     def __str__(self):
         return self.contact_name + " |\n" + self.contact_phone + " |\n" + self.contact_email + " |\n"
-    
+
 
 class Suppliers(models.Model):
     id = models.AutoField(primary_key=True)
@@ -178,7 +186,8 @@ class Suppliers(models.Model):
 
     def __str__(self):
         return self.name
-    
+    class Meta:
+        db_table = 'suppliers'
 
 class Shipments(models.Model): 
     id = models.AutoField(primary_key=True)
@@ -204,7 +213,7 @@ class Shipments(models.Model):
         return self.id + " " + self.notes
 
     class Meta:
-        db_table = 'api_shipments'
+        db_table = 'shipments'
 
 
 class ShipmentItem(models.Model):
@@ -212,7 +221,8 @@ class ShipmentItem(models.Model):
     shipment_id = models.ForeignKey(Shipments, related_name="items", on_delete=models.CASCADE)
     item_id = models.CharField(max_length=255)
     amount = models.IntegerField(default=0)
-    
+    class Meta:
+        db_table = 'shipment_items'
 
 class Transfers(models.Model):
     id = models.AutoField(primary_key=True)
@@ -226,6 +236,8 @@ class Transfers(models.Model):
 
     def __str__(self):
         return self.reference
+    class Meta:
+        db_table = 'transfers'
 
 
 class TransferItem(models.Model):
@@ -233,7 +245,8 @@ class TransferItem(models.Model):
     transfer_item = models.ForeignKey(Transfers, related_name="items", on_delete=models.CASCADE)
     item_id = models.CharField(max_length=255)
     amount = models.IntegerField(default=0)
-    
+    class Meta:
+        db_table = 'transfer_items'
 
 class Orders(models.Model):
     id = models.AutoField(primary_key=True)
@@ -260,7 +273,8 @@ class Orders(models.Model):
 
     def __str__(self):
         return f"Order {self.reference} - {self.order_status}"
-
+    class Meta:
+        db_table = 'orders'
 
 class OrderItem(models.Model):
     id = models.AutoField(primary_key=True)
@@ -270,7 +284,8 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"Item {self.item_id} (Amount: {self.amount})"
-
+    class Meta:
+        db_table = 'order_items'
 
 class Locations(models.Model):
     id = models.AutoField(primary_key=True)
@@ -282,7 +297,8 @@ class Locations(models.Model):
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        db_table = 'locations'
 
 class Pseudo_models(models.Model):
     id = models.AutoField(primary_key=True)
